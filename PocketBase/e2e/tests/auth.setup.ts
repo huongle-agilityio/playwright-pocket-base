@@ -1,0 +1,22 @@
+import * as path from 'path';
+import { test } from '@/fixtures';
+import { USER } from '@/constants';
+
+const authFile = path.join(__dirname, '../../playwright/.auth/user.json');
+test(
+  'authenticated',
+  {
+    tag: '@setup',
+  },
+  async ({ page, loginPage, dashboardPage }) => {
+    await loginPage.goto();
+    await loginPage.form.reset();
+    await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+
+    // Wait for final URL to ensure cookies are set
+    await dashboardPage.verifyDashboardLoaded();
+
+    // Save auth state
+    await page.context().storageState({ path: authFile });
+  },
+);
