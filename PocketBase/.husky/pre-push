@@ -1,0 +1,3 @@
+
+cd ./PocketBase
+npm run test
