@@ -18,50 +18,24 @@ const INVALID_CASES = [
   },
 ];
 
-test.describe('Login', () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.goto();
-    await loginPage.form.reset();
-  });
-
-  test('Verify that the user can log in successfully', async ({
-    page,
-    loginPage,
-    dashboardPage,
-  }) => {
-    await test.step('Fill username and password', async () => {
-      await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+test.describe(
+  'Login',
+  {
+    tag: '@public',
+  },
+  () => {
+    test.beforeEach(async ({ loginPage }) => {
+      await loginPage.goto();
+      await loginPage.form.reset();
     });
 
-    await test.step('Verify that response token exists and email is correct', async () => {
-      // Wait for login response (adjust URL to match your API)
-      const loginResponse = await page.waitForResponse(
-        (res) => res.url().includes(API_URLS.LOGIN) && res.request().method() === 'POST',
-      );
-      const responseBody = await loginResponse.json();
-
-      expect(loginResponse.status()).toBe(STATUS_CODES.SUCCESS);
-      // Check token exists and email is correct
-      expect(responseBody.token || responseBody.access_token).toBeTruthy();
-      expect(responseBody.record.email).toBe(USER.USER_NAME);
-    });
-
-    await test.step('Verify dashboard loaded', async () => {
-      await dashboardPage.verifyDashboardLoaded();
-    });
-
-    await test.step('Logout from dashboard', async () => {
-      await dashboardPage.logout();
-    });
-  });
-
-  INVALID_CASES.forEach(({ field, email, password }) => {
-    test(`Verify that the user failed to log in with the wrong ${field}`, async ({
+    test('Verify that the user can log in successfully', async ({
       page,
       loginPage,
+      dashboardPage,
     }) => {
       await test.step('Fill username and password', async () => {
-        await loginPage.form.loginAs(email, password);
+        await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
       });
 
       await test.step('Verify that response token exists and email is correct', async () => {
@@ -71,15 +45,47 @@ test.describe('Login', () => {
         );
         const responseBody = await loginResponse.json();
 
-        expect(loginResponse.status()).toBe(STATUS_CODES.BAD_REQUEST);
+        expect(loginResponse.status()).toBe(STATUS_CODES.SUCCESS);
         // Check token exists and email is correct
-        expect(responseBody.token || responseBody.access_token).toBeFalsy();
-        expect(responseBody.message).toBe(ERROR_MESSAGES.FAILED_TO_AUTHENTICATE);
+        expect(responseBody.token || responseBody.access_token).toBeTruthy();
+        expect(responseBody.record.email).toBe(USER.USER_NAME);
       });
 
-      await test.step('Verify error message', async () => {
-        await loginPage.verifyToastMessage(ERROR_MESSAGES.INVALID_LOGIN_CREDENTIALS);
+      await test.step('Verify dashboard loaded', async () => {
+        await dashboardPage.verifyDashboardLoaded();
+      });
+
+      await test.step('Logout from dashboard', async () => {
+        await dashboardPage.logout();
       });
     });
-  });
-});
+
+    INVALID_CASES.forEach(({ field, email, password }) => {
+      test(`Verify that the user failed to log in with the wrong ${field}`, async ({
+        page,
+        loginPage,
+      }) => {
+        await test.step('Fill username and password', async () => {
+          await loginPage.form.loginAs(email, password);
+        });
+
+        await test.step('Verify that response token exists and email is correct', async () => {
+          // Wait for login response (adjust URL to match your API)
+          const loginResponse = await page.waitForResponse(
+            (res) => res.url().includes(API_URLS.LOGIN) && res.request().method() === 'POST',
+          );
+          const responseBody = await loginResponse.json();
+
+          expect(loginResponse.status()).toBe(STATUS_CODES.BAD_REQUEST);
+          // Check token exists and email is correct
+          expect(responseBody.token || responseBody.access_token).toBeFalsy();
+          expect(responseBody.message).toBe(ERROR_MESSAGES.FAILED_TO_AUTHENTICATE);
+        });
+
+        await test.step('Verify error message', async () => {
+          await loginPage.verifyToastMessage(ERROR_MESSAGES.INVALID_LOGIN_CREDENTIALS);
+        });
+      });
+    });
+  },
+);
