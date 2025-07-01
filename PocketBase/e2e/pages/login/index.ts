@@ -1,9 +1,6 @@
 import { expect } from '@playwright/test';
 import { Form } from './components/form';
 
-// Constants
-import { BASE_URL } from '@/constants';
-
 export class LoginPage {
   readonly page;
   readonly form;
@@ -18,7 +15,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto(BASE_URL);
+    await this.page.goto('');
   }
 
   /**

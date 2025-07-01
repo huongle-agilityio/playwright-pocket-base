@@ -12,8 +12,9 @@ export class DashboardPage {
   }
 
   async goto() {
-    await this.page.getByRole('link', { name: 'Collections' }).click();
-    await this.page.getByRole('link', { name: 'users' }).click();
+    await this.page.goto('');
+    await this.frame.getByRole('link', { name: 'Collections' }).click();
+    await this.frame.getByRole('link', { name: 'users' }).click();
   }
 
   /**
