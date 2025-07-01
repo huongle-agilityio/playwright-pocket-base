@@ -29,7 +29,9 @@ test.describe('Login', () => {
     loginPage,
     dashboardPage,
   }) => {
-    await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+    await test.step('Fill username and password', async () => {
+      await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+    });
 
     await test.step('Verify that response token exists and email is correct', async () => {
       // Wait for login response (adjust URL to match your API)
@@ -48,8 +50,9 @@ test.describe('Login', () => {
       await dashboardPage.verifyDashboardLoaded();
     });
 
-    // Logout
-    await dashboardPage.logout();
+    await test.step('Logout from dashboard', async () => {
+      await dashboardPage.logout();
+    });
   });
 
   INVALID_CASES.forEach(({ field, email, password }) => {
@@ -57,7 +60,9 @@ test.describe('Login', () => {
       page,
       loginPage,
     }) => {
-      await loginPage.form.loginAs(email, password);
+      await test.step('Fill username and password', async () => {
+        await loginPage.form.loginAs(email, password);
+      });
 
       await test.step('Verify that response token exists and email is correct', async () => {
         // Wait for login response (adjust URL to match your API)
@@ -72,7 +77,9 @@ test.describe('Login', () => {
         expect(responseBody.message).toBe(ERROR_MESSAGES.FAILED_TO_AUTHENTICATE);
       });
 
-      await loginPage.verifyToastMessage(ERROR_MESSAGES.INVALID_LOGIN_CREDENTIALS);
+      await test.step('Verify error message', async () => {
+        await loginPage.verifyToastMessage(ERROR_MESSAGES.INVALID_LOGIN_CREDENTIALS);
+      });
     });
   });
 });
