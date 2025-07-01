@@ -24,26 +24,44 @@ export default defineConfig({
 
     {
       name: 'chromium',
-      grep: /@public/,
-      grepInvert: /@setup/,
+      grep: /@private/,
       use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
       dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
-      grep: /@public/,
-      grepInvert: /@setup/,
+      grep: /@private/,
       use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/user.json' },
       dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
-      grep: /@public/,
-      grepInvert: /@setup/,
+      grep: /@private/,
       use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/user.json' },
       dependencies: ['setup'],
+    },
+
+    {
+      name: 'chromium',
+      grep: /@public/,
+      grepInvert: /@setup/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    {
+      name: 'firefox',
+      grep: /@public/,
+      grepInvert: /@setup/,
+      use: { ...devices['Desktop Firefox'] },
+    },
+
+    {
+      name: 'webkit',
+      grep: /@public/,
+      grepInvert: /@setup/,
+      use: { ...devices['Desktop Safari'] },
     },
   ],
 });
