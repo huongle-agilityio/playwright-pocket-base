@@ -29,4 +29,18 @@ export class DashboardPage {
     await this.frame.getByRole('button', { name: 'Logged superuser menu' }).click();
     await this.frame.getByRole('menuitem', { name: 'Logout' }).click();
   }
+
+  async clickAddNew() {
+    await this.frame.getByRole('button', { name: 'New record' }).click();
+  }
+
+  /**
+   * Verifies that a toast message with the specified text is visible on the page.
+   *
+   * @param message - The text of the toast message to verify.
+   */
+  async verifyToastMessage(message: string) {
+    const toastMessage = this.frame.getByText(message);
+    await expect(toastMessage).toBeVisible();
+  }
 }

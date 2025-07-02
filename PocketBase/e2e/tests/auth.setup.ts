@@ -13,7 +13,6 @@ test(
     await loginPage.form.reset();
     await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
 
-    // Wait for final URL to ensure cookies are set
     await dashboardPage.verifyDashboardLoaded();
 
     // Save auth state
