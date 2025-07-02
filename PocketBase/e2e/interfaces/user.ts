@@ -10,3 +10,8 @@ export interface User {
   avatar?: string;
   website?: string;
 }
+
+export interface Table extends Pick<User, 'email' | 'id' | 'name' | 'avatar' | 'website'> {
+  isEmailVisibility?: boolean;
+  isVerified?: boolean;
+}

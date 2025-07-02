@@ -7,7 +7,7 @@ import { API_URLS, MESSAGES, STATUS_CODES } from '@/constants';
 import { User } from '@/interfaces';
 
 // Utils
-import { createUser, generateUserId } from '@/utils';
+import { submitUserForm, generateUserId } from '@/utils';
 
 const USER = {
   id: generateUserId(),
@@ -124,10 +124,10 @@ test.describe(
       page,
       userForm,
       dashboardPage,
-      userTable,
+      tablePage,
     }) => {
       await test.step('Fill form with required inputs', async () => {
-        const [response] = await createUser({ page, userForm, dashboardPage, user: USER });
+        const [response] = await submitUserForm({ page, userForm, dashboardPage, user: USER });
         const responseBody = await response.json();
 
         await test.step('Verify returned data matches input', async () => {
@@ -138,7 +138,7 @@ test.describe(
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
-        await userTable.verifyUserRow(USER);
+        await tablePage.verifyUserRow(USER);
         await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
       });
     });
@@ -146,7 +146,7 @@ test.describe(
     test('Verify that the user can add a new user by filling in all the inputs', async ({
       dashboardPage,
       userForm,
-      userTable,
+      tablePage,
     }) => {
       const payload: User = {
         ...USER,
@@ -161,7 +161,7 @@ test.describe(
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
-        await userTable.verifyUserRow(payload);
+        await tablePage.verifyUserRow(payload);
         await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
       });
     });
@@ -198,7 +198,7 @@ test.describe(
         }
 
         await test.step(`Fill form with invalid ${field}`, async () => {
-          const [response] = await createUser({ page, userForm, dashboardPage, user: payload });
+          const [response] = await submitUserForm({ page, userForm, dashboardPage, user: payload });
           const responseBody = await response.json();
 
           await test.step('Verify that the response return error message', async () => {

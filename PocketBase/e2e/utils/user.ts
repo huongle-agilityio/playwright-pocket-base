@@ -31,7 +31,7 @@ export const generateUserId = () => {
  * @param user - The User object containing the user's information to fill out the form.
  * @returns A promise that resolves when the form is submitted and the API response is received.
  */
-export const createUser = async ({
+export const submitUserForm = async ({
   page,
   userForm,
   user,
