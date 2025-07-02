@@ -11,10 +11,18 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+  timeout: 60000,
   reporter: 'html',
   use: {
     baseURL: process.env.BASE_URL,
     trace: 'on-first-retry',
+    extraHTTPHeaders: {
+      // We set this header per GitHub guidelines.
+      Accept: 'application/vnd.github.v3+json',
+      // Add authorization token to all requests.
+      // Assuming personal access token available in the environment.
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+    },
   },
 
   /* Configure projects for major browsers */

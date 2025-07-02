@@ -1,7 +1,7 @@
 import { expect, test } from '@/fixtures';
 
 // Constants
-import { API_URLS, ERROR_MESSAGES, STATUS_CODES, USER } from '@/constants';
+import { API_URLS, MESSAGES, STATUS_CODES, USER } from '@/constants';
 
 test.describe.configure({ timeout: 90_000 });
 
@@ -79,11 +79,11 @@ test.describe(
           expect(loginResponse.status()).toBe(STATUS_CODES.BAD_REQUEST);
           // Check token exists and email is correct
           expect(responseBody.token || responseBody.access_token).toBeFalsy();
-          expect(responseBody.message).toBe(ERROR_MESSAGES.FAILED_TO_AUTHENTICATE);
+          expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);
         });
 
         await test.step('Verify error message', async () => {
-          await loginPage.verifyToastMessage(ERROR_MESSAGES.INVALID_LOGIN_CREDENTIALS);
+          await loginPage.verifyToastMessage(MESSAGES.INVALID_LOGIN_CREDENTIALS);
         });
       });
     });
