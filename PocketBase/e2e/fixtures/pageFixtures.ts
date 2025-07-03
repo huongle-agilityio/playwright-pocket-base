@@ -1,11 +1,12 @@
 import { test as base, expect } from '@playwright/test';
-import { DashboardPage, LoginPage, UserForm, TablePage } from '../pages';
+import { DashboardPage, LoginPage, UserForm, TablePage, SearchInput } from '../pages';
 
 interface PagesFixture {
   userForm: UserForm;
   loginPage: LoginPage;
   tablePage: TablePage;
   dashboardPage: DashboardPage;
+  searchInput: SearchInput;
 }
 
 const test = base.extend<PagesFixture>({
@@ -27,6 +28,11 @@ const test = base.extend<PagesFixture>({
   userForm: async ({ page }, use) => {
     const form = new UserForm(page);
     await use(form);
+  },
+
+  searchInput: async ({ page }, use) => {
+    const searchInput = new SearchInput(page);
+    await use(searchInput);
   },
 });
 
