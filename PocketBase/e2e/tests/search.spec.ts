@@ -6,9 +6,9 @@ import { API_URLS, STATUS_CODES } from '@/constants';
 // Utils
 import { createApiContext, generateUserId } from '@/utils';
 
-const USERS = ['test1@gmail.com', 'test2@gmail.com', 'test33@gmail.com'].map((email) => ({
+const USERS = ['test1', 'test2', 'test33'].map((prefix) => ({
   id: generateUserId(),
-  email,
+  email: `${prefix}_${generateUserId()}}@gmail.com`,
   password: 'Test123@',
   passwordConfirm: 'Test123@',
 }));
@@ -45,7 +45,7 @@ test.describe('Search', { tag: '@private' }, () => {
   }) => {
     let response;
     let responseBody;
-    const searchValue = 'test2@gmail.com';
+    const searchValue = USERS[1].email;
 
     await test.step('Trigger search and wait for response', async () => {
       const responsePromise = page.waitForResponse((res) => {
@@ -75,6 +75,7 @@ test.describe('Search', { tag: '@private' }, () => {
           columnName: 'email',
           value: searchValue,
         });
+
         expect(response.status()).toBe(STATUS_CODES.SUCCESS);
         expect(responseBody.items.length).toBe(1);
         expect(userRow).toEqual([
