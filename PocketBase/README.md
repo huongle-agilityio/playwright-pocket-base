@@ -70,8 +70,8 @@ npm install
 USER_NAME=test@example.com
 PASSWORD=123456
 INVALID_USER_NAME=test123@example.com
-INVALID_PASSWORD=invalid_password
-BASE_URL=https://pocketbase.io/demo/
+INVALID_PASSWORD=1234567
+BASE_URL=https://pocketbase.io
 ```
 
 ## Ways to use
