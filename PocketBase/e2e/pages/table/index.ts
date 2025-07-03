@@ -46,6 +46,7 @@ export class TablePage {
    *   element handle.
    */
   async getRowByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+    await this.waitForTableToLoad();
     const row = this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
     await expect(row).toBeVisible({ timeout: 5000 });
 
@@ -62,6 +63,7 @@ export class TablePage {
    * @return {Promise<Locator>} - A locator representing all matched rows.
    */
   async getAllRowsByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+    await this.waitForTableToLoad();
     return await this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
   }
 
@@ -111,6 +113,7 @@ export class TablePage {
    * @return {Promise<ElementHandle>} - A promise resolving to the table cell element handle.
    */
   async getCellByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+    await this.waitForTableToLoad();
     const row = await this.getRowByValue({ columnName, value });
     const cell = row.locator(`td.col-field-${columnName}`);
     await expect(cell).toBeVisible({ timeout: 3000 });
