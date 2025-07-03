@@ -11,6 +11,31 @@ export class TablePage {
   }
 
   /**
+   * Verifies that a message with the specified text is visible on the page.
+   *
+   * @param message - The text of the message to verify.
+   */
+  async verifyMessage(message: string) {
+    await expect(this.page.getByRole('heading', { name: message })).toBeVisible({
+      timeout: 6000,
+    });
+  }
+
+  buttonClearFilters() {
+    return this.page.getByRole('button', { name: 'Clear filters' });
+  }
+
+  getLength() {
+    return this.page.locator('tbody tr:has(td:not(:has(h6)))').count();
+  }
+
+  async waitForTableToLoad() {
+    await expect(this.page.locator('table.table-loading')).toHaveCount(0, {
+      timeout: 5000,
+    });
+  }
+
+  /**
    * Retrieves a table row that has a cell with the specified value in the
    * column with the given name.
    *
@@ -25,6 +50,19 @@ export class TablePage {
     await expect(row).toBeVisible({ timeout: 5000 });
 
     return row;
+  }
+
+  /**
+   * Retrieves all table rows that have a cell with the specified value
+   * in the column with the given name.
+   *
+   * @param {Object}
+   *   - columnName: The name of the column to search for the value in.
+   *   - value: The value to search for in the specified column.
+   * @return {Promise<Locator>} - A locator representing all matched rows.
+   */
+  async getAllRowsByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+    return await this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
   }
 
   /**
@@ -56,6 +94,7 @@ export class TablePage {
 
       if (match) {
         const columnName = match[1];
+        if (columnName === 'created' || columnName === 'updated') continue;
         const value = (await cell.innerText()).trim();
         result.push({ [columnName]: value });
       }
