@@ -61,7 +61,6 @@ test.describe('Search', { tag: '@private' }, () => {
       // Trigger search and input check together with retry
       await expect(async () => {
         await searchInput.search(searchValue);
-        await page.waitForTimeout(300);
         await searchInput.verifySearchInputValue(searchValue);
       }).toPass({ timeout: 5000 });
 
@@ -97,17 +96,19 @@ test.describe('Search', { tag: '@private' }, () => {
     tablePage,
   }) => {
     const searchValue = 'test';
+
     await test.step('Search for a user', async () => {
       await searchInput.search(searchValue);
     });
 
     await test.step('Verify still have user matched with half of the matching text', async () => {
       const rows = await tablePage.getAllRowsByValue({ columnName: 'email', value: searchValue });
+
       const count = await rows.count();
+      expect(count).toBeGreaterThan(0);
 
       for (let i = 0; i < count; i++) {
-        const text = await rows.nth(i).textContent();
-        expect(text).toContain(searchValue);
+        await expect(rows.nth(i)).toContainText(searchValue);
       }
     });
   });
