@@ -1,7 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+
+// Constants
+import { BASE_URL } from '@/constants';
+
+// Utils
+import { extractAccessToken } from '@/utils';
+
+const accessToken = extractAccessToken();
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
@@ -13,41 +20,46 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   timeout: 60000,
   reporter: 'html',
+
   use: {
-    baseURL: process.env.BASE_URL,
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
     extraHTTPHeaders: {
-      // We set this header per GitHub guidelines.
-      Accept: 'application/vnd.github.v3+json',
-      // Add authorization token to all requests.
-      // Assuming personal access token available in the environment.
-      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+      Accept: 'application/json',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   },
 
-  /* Configure projects for major browsers */
   projects: [
-    // Setup project
     { name: 'setup', testMatch: /.*\.setup\.ts/ },
 
     {
       name: 'chromium',
       grep: /@private/,
-      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/user.json',
+      },
       dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
       grep: /@private/,
-      use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/user.json' },
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: 'playwright/.auth/user.json',
+      },
       dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
       grep: /@private/,
-      use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/user.json' },
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: 'playwright/.auth/user.json',
+      },
       dependencies: ['setup'],
     },
 

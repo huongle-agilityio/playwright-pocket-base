@@ -138,6 +138,7 @@ test.describe(
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
+        await tablePage.waitForTableToLoad();
         await tablePage.verifyUserRow(USER);
         await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
       });
@@ -161,6 +162,7 @@ test.describe(
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
+        await tablePage.waitForTableToLoad();
         await tablePage.verifyUserRow(payload);
         await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
       });
