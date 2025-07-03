@@ -45,18 +45,19 @@ test.describe('Search', { tag: '@private' }, () => {
   }) => {
     const searchValue = 'test2@gmail.com';
 
-    await test.step('Search for a user', async () => {
-      await searchInput.search(searchValue);
-    });
-
     await test.step('Verify the response', async () => {
-      const response = await page.waitForResponse((res) => {
+      const responsePromise = page.waitForResponse((res) => {
         const decodedURL = decodeURIComponent(res.url());
+
         return (
           decodedURL.includes(`filter=id~"${searchValue}"`) && res.request().method() === 'GET'
         );
       });
+
+      await searchInput.search(searchValue);
+      const response = await responsePromise;
       const responseBody = await response.json();
+
       await searchInput.verifySearchInputValue(searchValue);
 
       await test.step('Verify the responses match with data in UI', async () => {
