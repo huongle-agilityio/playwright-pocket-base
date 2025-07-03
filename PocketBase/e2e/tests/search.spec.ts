@@ -14,21 +14,12 @@ const USERS = ['test1@gmail.com', 'test2@gmail.com', 'test33@gmail.com'].map((em
 }));
 
 test.describe('Search', { tag: '@private' }, () => {
-  test.beforeEach(async ({ dashboardPage }) => {
+  test.beforeEach(async ({ dashboardPage, searchInput }) => {
     await dashboardPage.goto();
 
     const context = await createApiContext();
     for (const user of USERS) {
       await context.post(API_URLS.USER, { data: user });
-    }
-
-    await context.dispose();
-  });
-
-  test.afterEach(async ({ searchInput }) => {
-    const context = await createApiContext();
-    for (const user of USERS) {
-      await context.delete(`${API_URLS.USER}/${user.id}`);
     }
 
     await context.dispose();
@@ -38,32 +29,52 @@ test.describe('Search', { tag: '@private' }, () => {
     }
   });
 
+  test.afterEach(async () => {
+    const context = await createApiContext();
+    for (const user of USERS) {
+      await context.delete(`${API_URLS.USER}/${user.id}`);
+    }
+
+    await context.dispose();
+  });
+
   test('Verify that the user can search users with a matching email', async ({
     page,
     searchInput,
     tablePage,
   }) => {
+    let response;
+    let responseBody;
     const searchValue = 'test2@gmail.com';
 
-    await test.step('Verify the response', async () => {
+    await test.step('Trigger search and wait for response', async () => {
       const responsePromise = page.waitForResponse((res) => {
         const decodedURL = decodeURIComponent(res.url());
 
         return (
-          decodedURL.includes(`filter=id~"${searchValue}"`) && res.request().method() === 'GET'
+          decodedURL.includes(`filter=id~"${searchValue}"`) &&
+          !decodedURL.includes('fields=id') &&
+          res.request().method() === 'GET'
         );
       });
 
-      await searchInput.search(searchValue);
-      const response = await responsePromise;
-      const responseBody = await response.json();
+      // Trigger search and input check together with retry
+      await expect(async () => {
+        await searchInput.search(searchValue);
+        await page.waitForTimeout(300);
+        await searchInput.verifySearchInputValue(searchValue);
+      }).toPass({ timeout: 5000 });
 
-      await searchInput.verifySearchInputValue(searchValue);
+      response = await responsePromise;
+      responseBody = await response.json();
+    });
 
-      await test.step('Verify the responses match with data in UI', async () => {
-        await tablePage.waitForTableToLoad();
-        test.setTimeout(30000);
-        const userRow = await tablePage.extractRowData({ columnName: 'email', value: searchValue });
+    await test.step('Wait for table to load and verify content', async () => {
+      await expect(async () => {
+        const userRow = await tablePage.extractRowData({
+          columnName: 'email',
+          value: searchValue,
+        });
         expect(response.status()).toBe(STATUS_CODES.SUCCESS);
         expect(responseBody.items.length).toBe(1);
         expect(userRow).toEqual([
@@ -76,7 +87,7 @@ test.describe('Search', { tag: '@private' }, () => {
           { avatar: responseBody.items[0].avatar || 'N/A' },
           { website: responseBody.items[0].website || 'N/A' },
         ]);
-      });
+      }).toPass({ timeout: 5000 });
     });
   });
 
