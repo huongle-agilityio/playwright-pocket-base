@@ -1,10 +1,10 @@
 import { test as base, expect } from '@playwright/test';
-import { DashboardPage, LoginPage, UserForm, UserTable } from '../pages';
+import { DashboardPage, LoginPage, UserForm, TablePage } from '../pages';
 
 interface PagesFixture {
   userForm: UserForm;
   loginPage: LoginPage;
-  userTable: UserTable;
+  tablePage: TablePage;
   dashboardPage: DashboardPage;
 }
 
@@ -19,9 +19,9 @@ const test = base.extend<PagesFixture>({
     await use(dashboardPage);
   },
 
-  userTable: async ({ page }, use) => {
-    const userTable = new UserTable(page);
-    await use(userTable);
+  tablePage: async ({ page }, use) => {
+    const tablePage = new TablePage(page);
+    await use(tablePage);
   },
 
   userForm: async ({ page }, use) => {
