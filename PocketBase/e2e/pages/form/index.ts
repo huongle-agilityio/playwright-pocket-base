@@ -34,13 +34,22 @@ export class UserForm {
     this.buttonCancel = this.page.getByRole('button', { name: 'Cancel' });
   }
 
-  async verifyTitle() {
-    const title = this.page.getByRole('heading', { name: 'New users record' });
+  async verifyTitle(message) {
+    const title = this.page.getByRole('heading', { name: message });
     await expect(title).toBeVisible();
   }
 
   async submit() {
     await this.buttonSubmit.click();
+  }
+
+  async saveChange() {
+    await this.page.getByRole('button', { name: 'Save changes' }).click();
+  }
+
+  async saveAndContinue() {
+    await this.page.locator('.btn.p-l-5').click();
+    await this.page.getByRole('menuitem', { name: 'Save and continue' }).click();
   }
 
   async cancel() {

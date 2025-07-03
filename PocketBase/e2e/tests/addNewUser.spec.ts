@@ -75,7 +75,7 @@ test.describe(
     test.beforeEach(async ({ dashboardPage, userForm }) => {
       await dashboardPage.goto();
       await dashboardPage.clickAddNew();
-      await userForm.verifyTitle();
+      await userForm.verifyTitle('New users record');
     });
 
     test.afterEach(async ({ page, request }) => {
@@ -98,7 +98,7 @@ test.describe(
       });
 
       await test.step('Verify that the form is not closed', async () => {
-        await userForm.verifyTitle();
+        await userForm.verifyTitle('New users record');
       });
     });
 
@@ -180,7 +180,7 @@ test.describe(
       await test.step('Fill form with all inputs expect avatar', async () => {
         await userForm.fillForm(payload);
 
-        await userForm.verifyTitle();
+        await userForm.verifyTitle('New users record');
       });
 
       await test.step('Verify error messages', async () => {
@@ -204,7 +204,7 @@ test.describe(
           const responseBody = await response.json();
 
           await test.step('Verify that the response return error message', async () => {
-            await userForm.verifyTitle();
+            await userForm.verifyTitle('New users record');
             expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
             expect(responseBody.data[field]).toBeTruthy();
             expect(responseBody.message).toBe(MESSAGES.FAILED_TO_CREATE_RECORD);

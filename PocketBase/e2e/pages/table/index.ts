@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { expect, Locator } from '@playwright/test';
 
 // Interfaces
 import { User, Table } from '@/interfaces';
@@ -21,11 +21,11 @@ export class TablePage {
     });
   }
 
-  buttonClearFilters() {
+  buttonClearFilters(): Locator {
     return this.page.getByRole('button', { name: 'Clear filters' });
   }
 
-  getLength() {
+  getLength(): Promise<number> {
     return this.page.locator('tbody tr:has(td:not(:has(h6)))').count();
   }
 
@@ -45,7 +45,13 @@ export class TablePage {
    * @return {Promise<ElementHandle>} - A promise resolving to the table row
    *   element handle.
    */
-  async getRowByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+  async getRowByValue({
+    columnName,
+    value,
+  }: {
+    columnName: keyof Table;
+    value: string;
+  }): Promise<Locator> {
     await this.waitForTableToLoad();
     const row = this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
     await expect(row).toBeVisible({ timeout: 5000 });
@@ -62,7 +68,13 @@ export class TablePage {
    *   - value: The value to search for in the specified column.
    * @return {Promise<Locator>} - A locator representing all matched rows.
    */
-  async getAllRowsByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+  async getAllRowsByValue({
+    columnName,
+    value,
+  }: {
+    columnName: keyof Table;
+    value: string;
+  }): Promise<Locator> {
     await this.waitForTableToLoad();
     return await this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
   }
@@ -83,7 +95,13 @@ export class TablePage {
    *   { "email": "lorem@gmail.com" },
    * ]
    */
-  async extractRowData({ columnName, value }: { columnName: keyof Table; value: string }) {
+  async extractRowData({
+    columnName,
+    value,
+  }: {
+    columnName: keyof Table;
+    value: string;
+  }): Promise<Record<string, string>[]> {
     const cells = (await this.getRowByValue({ columnName, value })).locator('td');
     const count = await cells.count();
 
@@ -112,7 +130,13 @@ export class TablePage {
    * @param value - The value to search for in the specified column.
    * @return {Promise<ElementHandle>} - A promise resolving to the table cell element handle.
    */
-  async getCellByValue({ columnName, value }: { columnName: keyof Table; value: string }) {
+  async getCellByValue({
+    columnName,
+    value,
+  }: {
+    columnName: keyof Table;
+    value: string;
+  }): Promise<Locator> {
     await this.waitForTableToLoad();
     const row = await this.getRowByValue({ columnName, value });
     const cell = row.locator(`td.col-field-${columnName}`);
@@ -128,7 +152,7 @@ export class TablePage {
    * @return {Promise<string[]>} - A promise that resolves to an array of strings,
    *   each representing a cell value from the specified column.
    */
-  async getAllValueCellByColumnName(columnName: keyof Table) {
+  async getAllValueCellByColumnName(columnName: keyof Table): Promise<string[]> {
     const values: string[] = [];
     const cells = this.page.locator(`tbody td.col-field-${columnName}`);
     const count = await cells.count();
@@ -148,7 +172,7 @@ export class TablePage {
    * @param index - The index of the row to retrieve.
    * @return {Promise<ElementHandle>} - A promise that resolves to the table row element handle.
    */
-  async getRowByIndex(index: number) {
+  async getRowByIndex(index: number): Promise<Locator> {
     const row = this.page.locator(`tbody tr:nth-child(${index})`);
     await expect(row).toBeVisible({ timeout: 5000 });
 
@@ -162,7 +186,7 @@ export class TablePage {
     website = 'N/A',
     isEmailVisibility = false,
     isVerified = false,
-  }: User) {
+  }: User): Promise<void> {
     const row = await this.getRowByValue({ columnName: 'email', value: email });
 
     await expect(row.locator('td.col-field-email')).toContainText(email);
