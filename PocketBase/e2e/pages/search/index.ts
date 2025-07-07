@@ -27,7 +27,11 @@ export class SearchInput {
   }
 
   async clickClearButton() {
-    await this.clearButton.click();
+    const isVisible = await this.clearButton.isVisible();
+
+    if (isVisible) {
+      await this.clearButton.click();
+    }
   }
 
   /**

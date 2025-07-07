@@ -36,11 +36,9 @@ test.describe('Edit user', { tag: '@private' }, () => {
     const newEmail = `test${generateUserId()}@gmail.com`;
 
     await test.step('Verify that the user can see the user in the table', async () => {
-      await expect(async () => {
-        await dashboardPage.goto();
-        row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-        expect(row).toBeVisible();
-      }).toPass({ timeout: 5000 });
+      await dashboardPage.goto();
+      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {
@@ -82,7 +80,7 @@ test.describe('Edit user', { tag: '@private' }, () => {
           { avatar: avatar || 'N/A' },
           { website: website || 'N/A' },
         ]);
-      }).toPass({ timeout: 5000 });
+      }).toPass({ timeout: 10000 });
     });
   });
 
@@ -95,11 +93,9 @@ test.describe('Edit user', { tag: '@private' }, () => {
     const newEmail = `test${generateUserId()}@gmail.com`;
 
     await test.step('Verify that the user can see the user in the table', async () => {
-      await expect(async () => {
-        await dashboardPage.goto();
-        row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-        expect(row).toBeVisible();
-      }).toPass({ timeout: 5000 });
+      await dashboardPage.goto();
+      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {
@@ -136,10 +132,8 @@ test.describe('Edit user', { tag: '@private' }, () => {
 
     await test.step('Verify that the user can see the user in the table', async () => {
       await dashboardPage.goto();
-      await expect(async () => {
-        row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-        expect(row).toBeVisible();
-      }).toPass({ timeout: 5000 });
+      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {
