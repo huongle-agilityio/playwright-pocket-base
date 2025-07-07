@@ -3,6 +3,9 @@ import { expect, test } from '@/fixtures';
 // Constants
 import { API_URLS, MESSAGES, STATUS_CODES, USER } from '@/constants';
 
+// Utils
+import { waitForPostResponse } from '@/utils';
+
 test.describe.configure({ timeout: 90_000 });
 
 const INVALID_CASES = [
@@ -34,18 +37,14 @@ test.describe(
       loginPage,
       dashboardPage,
     }) => {
-      await test.step('Fill username and password', async () => {
-        await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
-      });
-
       await test.step('Verify that response token exists and email is correct', async () => {
-        // Wait for login response (adjust URL to match your API)
-        const loginResponse = await page.waitForResponse(
-          (res) => res.url().includes(API_URLS.LOGIN) && res.request().method() === 'POST',
-        );
-        const responseBody = await loginResponse.json();
+        const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
+        await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
 
-        expect(loginResponse.status()).toBe(STATUS_CODES.SUCCESS);
+        const response = await responsePromise;
+        const responseBody = await response.json();
+
+        expect(response.status()).toBe(STATUS_CODES.SUCCESS);
         // Check token exists and email is correct
         expect(responseBody.token || responseBody.access_token).toBeTruthy();
         expect(responseBody.record.email).toBe(USER.USER_NAME);
@@ -65,18 +64,14 @@ test.describe(
         page,
         loginPage,
       }) => {
-        await test.step('Fill username and password', async () => {
-          await loginPage.form.loginAs(email, password);
-        });
-
         await test.step('Verify that response token exists and email is correct', async () => {
-          // Wait for login response (adjust URL to match your API)
-          const loginResponse = await page.waitForResponse(
-            (res) => res.url().includes(API_URLS.LOGIN) && res.request().method() === 'POST',
-          );
-          const responseBody = await loginResponse.json();
+          const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
+          await loginPage.form.loginAs(email, password);
 
-          expect(loginResponse.status()).toBe(STATUS_CODES.BAD_REQUEST);
+          const response = await responsePromise;
+          const responseBody = await response.json();
+
+          expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
           // Check token exists and email is correct
           expect(responseBody.token || responseBody.access_token).toBeFalsy();
           expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);

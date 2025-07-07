@@ -4,7 +4,7 @@ import { expect, test } from '@/fixtures';
 import { STATUS_CODES } from '@/constants';
 
 // Utils
-import { createMockUsers, deleteMockUsers, generateMockUsers } from '@/utils';
+import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse } from '@/utils';
 
 test.describe('Search', { tag: '@private' }, () => {
   const mocks = generateMockUsers();
@@ -32,15 +32,7 @@ test.describe('Search', { tag: '@private' }, () => {
     const searchValue = mocks[1].email;
 
     await test.step('Trigger search and wait for response', async () => {
-      const responsePromise = page.waitForResponse((res) => {
-        const decodedURL = decodeURIComponent(res.url());
-
-        return (
-          decodedURL.includes(`filter=id~"${searchValue}"`) &&
-          !decodedURL.includes('fields=id') &&
-          res.request().method() === 'GET'
-        );
-      });
+      const responsePromise = waitForGetResponse({ url: `filter=id~"${searchValue}"`, page });
 
       // Trigger search and input check together with retry
       await expect(async () => {
@@ -58,18 +50,20 @@ test.describe('Search', { tag: '@private' }, () => {
           columnName: 'email',
           value: searchValue,
         });
+        const { id, email, emailVisibility, verified, username, name, avatar, website } =
+          responseBody.items[0];
 
         expect(response.status()).toBe(STATUS_CODES.SUCCESS);
         expect(responseBody.items.length).toBe(1);
         expect(userRow).toEqual([
-          { id: responseBody.items[0].id },
-          { email: responseBody.items[0].email },
-          { emailVisibility: responseBody.items[0].emailVisibility ? 'True' : 'False' },
-          { verified: responseBody.items[0].verified ? 'True' : 'False' },
-          { username: responseBody.items[0].username },
-          { name: responseBody.items[0].name || 'N/A' },
-          { avatar: responseBody.items[0].avatar || 'N/A' },
-          { website: responseBody.items[0].website || 'N/A' },
+          { id },
+          { email },
+          { emailVisibility: emailVisibility ? 'True' : 'False' },
+          { verified: verified ? 'True' : 'False' },
+          { username: username },
+          { name: name || 'N/A' },
+          { avatar: avatar || 'N/A' },
+          { website: website || 'N/A' },
         ]);
       }).toPass({ timeout: 5000 });
     });
@@ -86,7 +80,10 @@ test.describe('Search', { tag: '@private' }, () => {
     });
 
     await test.step('Verify still have user matched with half of the matching text', async () => {
-      const rows = await tablePage.getAllRowsByValue({ columnName: 'email', value: searchValue });
+      const rows = await tablePage.getMultipleRowsByValue({
+        columnName: 'email',
+        value: searchValue,
+      });
 
       const count = await rows.count();
       expect(count).toBeGreaterThan(0);

@@ -7,7 +7,7 @@ import { API_URLS, MESSAGES, MOCK_USER, STATUS_CODES } from '@/constants';
 import { User } from '@/interfaces';
 
 // Utils
-import { createApiContext, deleteAnUser, submitUserForm } from '@/utils';
+import { createApiContext, deleteAnUser, waitForPostResponse } from '@/utils';
 
 const INVALID_FIELD_CASES = [
   {
@@ -110,15 +110,16 @@ test.describe(
       dashboardPage,
       tablePage,
     }) => {
-      await test.step('Fill form with required inputs', async () => {
-        const [response] = await submitUserForm({ page, userForm, dashboardPage, user: MOCK_USER });
+      await test.step('Fill form with required inputs and verify returned data matches input', async () => {
+        const responsePromise = waitForPostResponse({ url: API_URLS.USER, page });
+        await userForm.fillForm(MOCK_USER);
+
+        const response = await responsePromise;
         const responseBody = await response.json();
 
-        await test.step('Verify returned data matches input', async () => {
-          expect(response.status()).toBe(STATUS_CODES.SUCCESS);
-          expect(responseBody.email).toBe(MOCK_USER.email);
-          expect(responseBody.id).toBe(MOCK_USER.id);
-        });
+        expect(response.status()).toBe(STATUS_CODES.SUCCESS);
+        expect(responseBody.email).toBe(MOCK_USER.email);
+        expect(responseBody.id).toBe(MOCK_USER.id);
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
@@ -183,16 +184,17 @@ test.describe(
           });
         }
 
-        await test.step(`Fill form with invalid ${field}`, async () => {
-          const [response] = await submitUserForm({ page, userForm, dashboardPage, user: payload });
+        await test.step(`Fill form with invalid ${field} and verify that the response return error message`, async () => {
+          const responsePromise = waitForPostResponse({ url: API_URLS.USER, page });
+          await userForm.fillForm(payload);
+
+          const response = await responsePromise;
           const responseBody = await response.json();
 
-          await test.step('Verify that the response return error message', async () => {
-            await userForm.verifyTitle('New users record');
-            expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
-            expect(responseBody.data[field]).toBeTruthy();
-            expect(responseBody.message).toBe(MESSAGES.FAILED_TO_CREATE_RECORD);
-          });
+          await userForm.verifyTitle('New users record');
+          expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
+          expect(responseBody.data[field]).toBeTruthy();
+          expect(responseBody.message).toBe(MESSAGES.FAILED_TO_CREATE_RECORD);
         });
 
         await test.step('Verify error messages', async () => {
