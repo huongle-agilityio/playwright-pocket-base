@@ -94,6 +94,9 @@ export class UserForm {
    * @param message - The text of the error message to verify.
    */
   async verifyErrorMessage(message: string | RegExp) {
-    await expect(this.page.getByText(message)).toBeVisible();
+    const errorMessage = this.page.getByText(message);
+    await errorMessage.waitFor({ state: 'visible' });
+
+    await expect(errorMessage).toBeVisible();
   }
 }
