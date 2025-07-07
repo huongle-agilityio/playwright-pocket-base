@@ -36,16 +36,53 @@ export class TablePage {
   }
 
   /**
-   * Retrieves a table row that has a cell with the specified value in the
-   * column with the given name.
+   * Retrieves a table row with the specified value in the given column.
    *
-   * @param {Object}
-   *   - columnName: The name of the column to search for the value in.
-   *   - value: The value to search for in the specified column.
-   * @return {Promise<ElementHandle>} - A promise resolving to the table row
-   *   element handle.
+   * @param columnName - The name of the column to search for the value in.
+   * @param value - The value to search for in the specified column.
+   * @param {boolean} requireVisible - Whether to wait for the row to be visible before returning
+   *   it. Defaults to true.
+   * @return {Promise<Locator>} - A promise resolving to the table row element handle.
    */
   async getRowByValue({
+    columnName,
+    value,
+    requireVisible = true,
+  }: {
+    columnName: keyof Table;
+    value: string;
+    requireVisible?: boolean;
+  }): Promise<Locator> {
+    await this.waitForTableToLoad();
+    const row = this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
+
+    if (requireVisible) {
+      await expect(row).toBeVisible({ timeout: 5000 });
+    }
+
+    return row;
+  }
+
+  /**
+   * Returns a column header element based on the column name.
+   *
+   * @param columnName - The name of the column (should match the "title" attribute in <th>).
+   * @returns {Locator} - The Playwright Locator for the column header.
+   */
+  getColumn(columnName: keyof Table): Locator {
+    return this.page.locator(`thead tr th[title="${columnName}"]`);
+  }
+
+  /**
+   * Selects a table row by clicking the bulk select checkbox in the row that
+   * matches the specified value in the given column.
+   *
+   * @param columnName - The name of the column to search for the value in.
+   * @param value - The value to search for in the specified column.
+   * @return {Promise<Locator>} - A promise resolving to the checkbox element
+   *   handle.
+   */
+  async selectRowByValue({
     columnName,
     value,
   }: {
@@ -53,10 +90,58 @@ export class TablePage {
     value: string;
   }): Promise<Locator> {
     await this.waitForTableToLoad();
-    const row = this.page.locator(`tbody tr:has(td.col-field-${columnName}:has-text("${value}"))`);
-    await expect(row).toBeVisible({ timeout: 5000 });
+    const row = await this.getRowByValue({ columnName, value });
+    const checkbox = row.locator('td.bulk-select-col input[type="checkbox"]');
 
-    return row;
+    const checkboxId = await checkbox.getAttribute('id');
+    const label = row.locator(`label[for="${checkboxId}"]`);
+
+    await expect(label).toBeVisible();
+    await label.click();
+
+    return checkbox;
+  }
+
+  /**
+   * Selects multiple table rows by clicking the bulk select checkboxes.
+   *
+   * @param {Object}
+   *   - columnName: The name of the column to search for the values in.
+   *   - targetNames: An array of values to search for in the specified column.
+   */
+  async selectMultipleRowsByValue({
+    columnName,
+    targetNames,
+  }: {
+    columnName: keyof Table;
+    targetNames: string[];
+  }): Promise<Locator[]> {
+    await this.waitForTableToLoad();
+    const listCheckbox = [];
+    for (const name of targetNames) {
+      const row = await this.getRowByValue({ columnName, value: name });
+
+      const checkbox = row.locator('td.bulk-select-col input[type="checkbox"]');
+      listCheckbox.push(checkbox);
+      const checkboxId = await checkbox.getAttribute('id');
+
+      const label = row.locator(`label[for="${checkboxId}"]`);
+      await expect(label).toBeVisible();
+      await label.click();
+    }
+
+    return listCheckbox;
+  }
+
+  /**
+   * Selects all rows in the table by clicking the bulk select checkbox in the header.
+   * Ensures the checkbox is visible before interacting with it.
+   */
+  async selectAllIRows() {
+    await this.waitForTableToLoad();
+    const checkbox = await this.page.locator(`thead th.bulk-select-col label`);
+    await expect(checkbox).toBeVisible();
+    await checkbox.click();
   }
 
   /**

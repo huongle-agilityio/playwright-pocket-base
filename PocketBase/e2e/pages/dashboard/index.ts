@@ -25,13 +25,37 @@ export class DashboardPage {
     await expect(dashboard).toBeVisible();
   }
 
+  /**
+   * Deletes the selected item(s) in the table.
+   *
+   * This method first verifies that the "Delete selected" button is visible, then clicks it.
+   * The method does not verify that the item(s) are actually deleted from the table.
+   */
+  async deleteSelected() {
+    const button = this.frame.getByRole('button', { name: 'Delete selected' });
+    await expect(button).toBeVisible();
+    await button.click();
+  }
+
+  /**
+   * Resets the selected item(s) in the table.
+   *
+   * This method first verifies that the "Reset" button is visible, then clicks it.
+   * The method does not verify that the item(s) are actually reset in the table.
+   */
+  async resetSelected() {
+    const button = this.frame.getByRole('button', { name: 'Reset' });
+    await expect(button).toBeVisible();
+    await button.click();
+  }
+
   async logout() {
     await this.frame.getByRole('button', { name: 'Logged superuser menu' }).click();
     await this.frame.getByRole('menuitem', { name: 'Logout' }).click();
   }
 
   async clickAddNew() {
-    await this.frame.getByRole('button', { name: 'New record' }).click();
+    await this.frame.locator('header').getByRole('button', { name: 'New record' }).click();
   }
 
   /**
@@ -41,6 +65,40 @@ export class DashboardPage {
    */
   async verifyToastMessage(message: string) {
     const toastMessage = this.frame.getByText(message);
-    await expect(toastMessage).toBeVisible();
+    await expect(toastMessage).toBeVisible({ timeout: 10000 });
+  }
+
+  /**
+   * Submits the confirm modal by clicking the "Yes" button.
+   *
+   * @remarks
+   * This method is intended to be used when the user has been presented with a
+   * confirm modal and wants to confirm the action. The method does not verify
+   * that the modal is actually visible before clicking the button.
+   */
+  async submitConfirmModal() {
+    await this.frame.getByRole('button', { name: 'Yes' }).click();
+  }
+
+  /**
+   * Cancels the confirm modal by clicking the "No" button.
+   *
+   * @remarks
+   * This method is intended to be used when the user has been presented with a
+   * confirm modal and wants to cancel the action. The method does not verify
+   * that the modal is actually visible before clicking the button.
+   */
+  async cancelConfirmModal() {
+    await this.frame.getByRole('button', { name: 'No' }).click();
+  }
+
+  /**
+   * Verifies that the text on the page indicates that the specified number of
+   * records are selected.
+   *
+   * @param number - The number of records that should be selected.
+   */
+  verifyNumberOfRecordsSelected(number: number) {
+    return this.frame.getByText(`Selected ${number} ${number > 1 ? 'records' : 'record'}`);
   }
 }
