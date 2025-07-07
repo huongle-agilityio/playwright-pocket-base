@@ -1,20 +1,13 @@
 import { expect, test } from '@/fixtures';
 
 // Constants
-import { API_URLS, MESSAGES, STATUS_CODES } from '@/constants';
+import { API_URLS, MESSAGES, MOCK_USER, STATUS_CODES } from '@/constants';
 
 // Interfaces
 import { User } from '@/interfaces';
 
 // Utils
-import { submitUserForm, generateUserId } from '@/utils';
-
-const USER = {
-  id: generateUserId(),
-  email: `test${generateUserId()}@gmail.com`,
-  password: 'test123@',
-  passwordConfirm: 'test123@',
-};
+import { createApiContext, deleteAnUser, submitUserForm } from '@/utils';
 
 const INVALID_FIELD_CASES = [
   {
@@ -22,7 +15,7 @@ const INVALID_FIELD_CASES = [
     title:
       "Verify that the user can't create a new user when typing a username of less than 3 characters",
     payload: {
-      ...USER,
+      ...MOCK_USER,
       username: 'lo',
     },
     message: MESSAGES.LIMIT_CHARACTERS(),
@@ -31,7 +24,7 @@ const INVALID_FIELD_CASES = [
     field: 'username',
     title: "Verify that the user can't create a new user when typing the wrong username",
     payload: {
-      ...USER,
+      ...MOCK_USER,
       username: 'lorem lorem',
     },
     message: MESSAGES.INVALID_FORMAT,
@@ -40,7 +33,7 @@ const INVALID_FIELD_CASES = [
     field: 'email',
     title: "Verify that the user can't create a new user when typing a wrong format email",
     payload: {
-      ...USER,
+      ...MOCK_USER,
       email: 'test555@g',
     },
     message: MESSAGES.INVALID_EMAIL,
@@ -49,7 +42,7 @@ const INVALID_FIELD_CASES = [
     field: 'id',
     title: "Verify that the user can't create a new user when typing the wrong format ID",
     payload: {
-      ...USER,
+      ...MOCK_USER,
       id: 'lorem aaaabdada',
     },
     message: MESSAGES.INVALID_FORMAT,
@@ -59,7 +52,7 @@ const INVALID_FIELD_CASES = [
     title: "Verify that the user can't create a user when the email already exists",
     preStep: true,
     payload: {
-      ...USER,
+      ...MOCK_USER,
       email: 'test10@example.com',
     },
     message: MESSAGES.UNIQUE_VALUE,
@@ -78,18 +71,9 @@ test.describe(
       await userForm.verifyTitle('New users record');
     });
 
-    test.afterEach(async ({ page, request }) => {
-      await page.waitForTimeout(1000);
-
-      const userLocator = page.frameLocator('iframe').getByRole('cell', {
-        name: `Copy to clipboard ${USER.id}`,
-      });
-      const count = await userLocator.count();
-
-      if (count > 0) {
-        const response = await request.delete(`${API_URLS.USER}/${USER.id}`);
-        expect(response.status()).toBe(STATUS_CODES.NO_CONTENT);
-      }
+    test.afterEach(async ({ tablePage }) => {
+      const context = await createApiContext();
+      await deleteAnUser({ tablePage, user: MOCK_USER, context });
     });
 
     test("Verify that the user can't create user with empty inputs", async ({ userForm }) => {
@@ -106,7 +90,7 @@ test.describe(
       userForm,
     }) => {
       await test.step('Cancel form with filled inputs', async () => {
-        await userForm.email.fill(USER.email);
+        await userForm.email.fill(MOCK_USER.email);
         await userForm.cancel();
       });
 
@@ -127,19 +111,19 @@ test.describe(
       tablePage,
     }) => {
       await test.step('Fill form with required inputs', async () => {
-        const [response] = await submitUserForm({ page, userForm, dashboardPage, user: USER });
+        const [response] = await submitUserForm({ page, userForm, dashboardPage, user: MOCK_USER });
         const responseBody = await response.json();
 
         await test.step('Verify returned data matches input', async () => {
           expect(response.status()).toBe(STATUS_CODES.SUCCESS);
-          expect(responseBody.email).toBe(USER.email);
-          expect(responseBody.id).toBe(USER.id);
+          expect(responseBody.email).toBe(MOCK_USER.email);
+          expect(responseBody.id).toBe(MOCK_USER.id);
         });
       });
 
       await test.step('Verify toast message and user appear in the table', async () => {
         await tablePage.waitForTableToLoad();
-        await tablePage.verifyUserRow(USER);
+        await tablePage.verifyUserRow(MOCK_USER);
         await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
       });
     });
@@ -150,7 +134,7 @@ test.describe(
       tablePage,
     }) => {
       const payload: User = {
-        ...USER,
+        ...MOCK_USER,
         isVerified: true,
         name: 'lorem',
         username: 'lorem',
@@ -173,7 +157,7 @@ test.describe(
       userForm,
     }) => {
       const payload: User = {
-        ...USER,
+        ...MOCK_USER,
         avatar: 'test-image.png',
       };
 

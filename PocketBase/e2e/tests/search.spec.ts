@@ -1,41 +1,25 @@
 import { expect, test } from '@/fixtures';
 
 // Constants
-import { API_URLS, STATUS_CODES } from '@/constants';
+import { STATUS_CODES } from '@/constants';
 
 // Utils
-import { createApiContext, generateUserId } from '@/utils';
-
-const USERS = ['test1', 'test2', 'test33'].map((prefix) => ({
-  id: generateUserId(),
-  email: `${prefix}_${generateUserId()}}@gmail.com`,
-  password: 'Test123@',
-  passwordConfirm: 'Test123@',
-}));
+import { createMockUsers, deleteMockUsers, generateMockUsers } from '@/utils';
 
 test.describe('Search', { tag: '@private' }, () => {
+  const mocks = generateMockUsers();
+
   test.beforeEach(async ({ dashboardPage, searchInput }) => {
     await dashboardPage.goto();
-
-    const context = await createApiContext();
-    for (const user of USERS) {
-      await context.post(API_URLS.USER, { data: user });
-    }
-
-    await context.dispose();
+    await createMockUsers(mocks);
 
     if (await searchInput.clearButton.isVisible()) {
       await searchInput.clickClearButton();
     }
   });
 
-  test.afterEach(async () => {
-    const context = await createApiContext();
-    for (const user of USERS) {
-      await context.delete(`${API_URLS.USER}/${user.id}`);
-    }
-
-    await context.dispose();
+  test.afterEach(async ({ tablePage }) => {
+    await deleteMockUsers({ tablePage, users: mocks });
   });
 
   test('Verify that the user can search users with a matching email', async ({
@@ -45,7 +29,7 @@ test.describe('Search', { tag: '@private' }, () => {
   }) => {
     let response;
     let responseBody;
-    const searchValue = USERS[1].email;
+    const searchValue = mocks[1].email;
 
     await test.step('Trigger search and wait for response', async () => {
       const responsePromise = page.waitForResponse((res) => {
