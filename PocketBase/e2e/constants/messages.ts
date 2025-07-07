@@ -2,6 +2,8 @@ export const MESSAGES = {
   INVALID_LOGIN_CREDENTIALS: 'Invalid login credentials.',
   SUCCESSFULLY_CREATED_RECORD: 'Successfully created record.',
   SUCCESSFULLY_UPDATED_RECORD: 'Successfully updated record.',
+  SUCCESSFULLY_DELETED_RECORD: 'Successfully deleted the selected record.',
+  SUCCESSFULLY_DELETED_MULTIPLE_RECORDS: 'Successfully deleted the selected records.',
   INVALID_FORMAT: 'Invalid value format.',
   INVALID_EMAIL: 'Must be a valid email address.',
   UNIQUE_VALUE: 'Value must be unique.',
