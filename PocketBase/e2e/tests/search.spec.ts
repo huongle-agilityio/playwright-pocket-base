@@ -12,13 +12,11 @@ test.describe('Search', { tag: '@private' }, () => {
   test.beforeEach(async ({ dashboardPage, searchInput }) => {
     await dashboardPage.goto();
     await createMockUsers(mocks);
-
-    if (await searchInput.clearButton.isVisible()) {
-      await searchInput.clickClearButton();
-    }
+    await searchInput.clickClearButton();
   });
 
-  test.afterEach(async ({ tablePage }) => {
+  test.afterEach(async ({ dashboardPage, tablePage }) => {
+    await dashboardPage.verifyDashboardLoaded();
     await deleteMockUsers({ tablePage, users: mocks });
   });
 
@@ -67,6 +65,10 @@ test.describe('Search', { tag: '@private' }, () => {
         ]);
       }).toPass({ timeout: 5000 });
     });
+
+    await test.step('Clear input filters', async () => {
+      await searchInput.clickClearButton();
+    });
   });
 
   test('Verify that the user can search users with half of the matching text', async ({
@@ -92,6 +94,10 @@ test.describe('Search', { tag: '@private' }, () => {
         await expect(rows.nth(i)).toContainText(searchValue);
       }
     });
+
+    await test.step('Clear input filters', async () => {
+      await searchInput.clickClearButton();
+    });
   });
 
   test('Verify that the user can search for users with the unmatched text', async ({
@@ -108,6 +114,10 @@ test.describe('Search', { tag: '@private' }, () => {
       expect(await tablePage.getLength()).toBe(0);
       await tablePage.verifyMessage('No records found.');
       await expect(tablePage.buttonClearFilters()).toBeVisible();
+    });
+
+    await test.step('Clear input filters', async () => {
+      await searchInput.clickClearButton();
     });
   });
 
