@@ -1,10 +1,16 @@
 import { expect, test } from '@/fixtures';
 
 // Constants
-import { API_URLS, MESSAGES, STATUS_CODES } from '@/constants';
+import { MESSAGES, STATUS_CODES } from '@/constants';
 
 // Utils
-import { createMockUsers, deleteMockUsers, generateMockUsers, generateUserId } from '@/utils';
+import {
+  createMockUsers,
+  deleteMockUsers,
+  generateMockUsers,
+  generateUserId,
+  waitForPatchResponse,
+} from '@/utils';
 
 test.describe('Edit user', { tag: '@private' }, () => {
   const mocks = generateMockUsers();
@@ -44,11 +50,8 @@ test.describe('Edit user', { tag: '@private' }, () => {
 
     await test.step('Update email', async () => {
       await userForm.verifyTitle('Edit users record');
-      const responsePromise = page.waitForResponse(
-        (res) =>
-          res.url().includes(`${API_URLS.USER}/${mocks[1].id}`) &&
-          res.request().method() === 'PATCH',
-      );
+      const responsePromise = waitForPatchResponse({ page, id: mocks[1].id });
+
       await userForm.email.fill(newEmail);
       await userForm.saveChange();
       response = await responsePromise;
@@ -132,8 +135,8 @@ test.describe('Edit user', { tag: '@private' }, () => {
     const newEmail = mocks[0].email;
 
     await test.step('Verify that the user can see the user in the table', async () => {
+      await dashboardPage.goto();
       await expect(async () => {
-        await dashboardPage.goto();
         row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
         expect(row).toBeVisible();
       }).toPass({ timeout: 5000 });
@@ -146,11 +149,8 @@ test.describe('Edit user', { tag: '@private' }, () => {
 
     await test.step('Update email', async () => {
       await userForm.verifyTitle('Edit users record');
-      const responsePromise = page.waitForResponse(
-        (res) =>
-          res.url().includes(`${API_URLS.USER}/${mocks[1].id}`) &&
-          res.request().method() === 'PATCH',
-      );
+      const responsePromise = waitForPatchResponse({ page, id: mocks[1].id });
+
       await userForm.email.fill(newEmail);
       await userForm.saveChange();
       response = await responsePromise;

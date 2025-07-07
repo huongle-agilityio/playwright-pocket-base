@@ -1,5 +1,7 @@
 import * as path from 'path';
 import { test } from '@/fixtures';
+
+// Constants
 import { USER } from '@/constants';
 
 const authFile = path.join(__dirname, '../../playwright/.auth/user.json');

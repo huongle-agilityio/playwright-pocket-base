@@ -1,8 +1,8 @@
-import { APIRequestContext, expect, Page } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import { createApiContext } from './apis';
 
 // Pages
-import { DashboardPage, TablePage, UserForm } from '@/pages';
+import { TablePage } from '@/pages';
 
 // Constants
 import { API_URLS, STATUS_CODES } from '@/constants';
@@ -23,32 +23,6 @@ export const generateUserId = () => {
 
   return id;
 };
-
-/**
- * Creates a new user by filling out the user form and waits for the user creation API response.
- *
- * @param page - The Playwright Page object used to interact with the browser.
- * @param userForm - The UserForm object for interacting with the user form.
- * @param dashboardPage - The DashboardPage object for interacting with the dashboard.
- * @param user - The User object containing the user's information to fill out the form.
- * @returns A promise that resolves when the form is submitted and the API response is received.
- */
-export const submitUserForm = async ({
-  page,
-  userForm,
-  user,
-}: {
-  page: Page;
-  userForm: UserForm;
-  dashboardPage: DashboardPage;
-  user: User;
-}) =>
-  await Promise.all([
-    page.waitForResponse(
-      (res) => res.url().includes(API_URLS.USER) && res.request().method() === 'POST',
-    ),
-    userForm.fillForm(user),
-  ]);
 
 /**
  * Generates an array of User objects with the given prefixes.
@@ -77,7 +51,6 @@ export const generateMockUsers = (prefixes = ['test1', 'test2', 'test33']): User
 /**
  * Deletes a user from the database.
  *
- * @param {{ tablePage: TablePage, user: User, context: APIRequestContext }} options - Options object
  * @param {TablePage} tablePage - The TablePage object for interacting with the table.
  * @param {User} user - The user to delete.
  * @param {APIRequestContext} context - The APIRequestContext for making the request.
