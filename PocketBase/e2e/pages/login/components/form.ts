@@ -33,14 +33,6 @@ export class Form {
   }
 
   /**
-   * Clears the email and password fields in the login form.
-   */
-  async reset() {
-    await this.email.fill('');
-    await this.password.fill('');
-  }
-
-  /**
    * Logs in using the provided email and password.
    *
    * @param email - The email address to fill in the login form.

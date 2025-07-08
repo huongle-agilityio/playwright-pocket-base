@@ -6,7 +6,7 @@ import { STATUS_CODES } from '@/constants';
 // Utils
 import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse } from '@/utils';
 
-test.describe('Search', { tag: '@private' }, () => {
+test.describe('Search', () => {
   const mocks = generateMockUsers();
 
   test.beforeEach(async ({ dashboardPage, searchInput }) => {
