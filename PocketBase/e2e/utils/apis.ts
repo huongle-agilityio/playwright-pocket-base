@@ -1,7 +1,7 @@
 import { Page, request } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs';
-const authFilePath = path.resolve(__dirname, '../../playwright/.auth/user.json');
+const authFilePath = path.resolve(__dirname, '../.auth/user.json');
 
 // Constants
 import { API_URLS, BASE_URL } from '@/constants';

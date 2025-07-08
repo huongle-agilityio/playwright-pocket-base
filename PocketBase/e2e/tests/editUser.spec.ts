@@ -12,7 +12,7 @@ import {
   waitForPatchResponse,
 } from '@/utils';
 
-test.describe('Edit user', { tag: '@private' }, () => {
+test.describe('Edit user', () => {
   const mocks = generateMockUsers();
 
   test.beforeEach(async ({ dashboardPage }) => {
@@ -38,7 +38,7 @@ test.describe('Edit user', { tag: '@private' }, () => {
     await test.step('Verify that the user can see the user in the table', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-      expect(row).toBeVisible();
+      await expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {
@@ -95,7 +95,7 @@ test.describe('Edit user', { tag: '@private' }, () => {
     await test.step('Verify that the user can see the user in the table', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-      expect(row).toBeVisible();
+      await expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {
@@ -115,7 +115,7 @@ test.describe('Edit user', { tag: '@private' }, () => {
         columnName: 'email',
         value: newEmail,
       });
-      expect(updatedRow).toBeVisible();
+      await expect(updatedRow).toBeVisible();
     });
   });
 
@@ -133,7 +133,7 @@ test.describe('Edit user', { tag: '@private' }, () => {
     await test.step('Verify that the user can see the user in the table', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
-      expect(row).toBeVisible();
+      await expect(row).toBeVisible();
     });
 
     await test.step('Click user row to edit', async () => {

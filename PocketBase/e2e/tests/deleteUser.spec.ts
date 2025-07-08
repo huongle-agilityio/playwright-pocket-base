@@ -12,7 +12,7 @@ import {
   generateMockUsers,
 } from '@/utils';
 
-test.describe('Delete user', { tag: '@private' }, () => {
+test.describe('Delete user', () => {
   const mocks = generateMockUsers();
 
   test.beforeEach(async ({ dashboardPage, searchInput }) => {
