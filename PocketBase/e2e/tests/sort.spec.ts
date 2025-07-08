@@ -31,7 +31,7 @@ const CASES: { columnName: keyof Table }[] = [
 ];
 
 test.describe('Sort', () => {
-  const mocks = generateMockUsers();
+  const mocks = generateMockUsers(['sort1', 'sort2', 'sort3']);
 
   test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.goto();
