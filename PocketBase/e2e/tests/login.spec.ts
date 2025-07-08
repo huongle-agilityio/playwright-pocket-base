@@ -21,66 +21,61 @@ const INVALID_CASES = [
   },
 ];
 
-test.describe(
-  'Login',
-  {
-    tag: '@public',
-  },
-  () => {
-    test.beforeEach(async ({ loginPage }) => {
-      await loginPage.goto();
-      await loginPage.form.reset();
+test.use({ storageState: { cookies: [], origins: [] } });
+
+test.describe('Login', () => {
+  test.beforeEach(async ({ loginPage }) => {
+    await loginPage.goto();
+  });
+
+  test('Verify that the user can log in successfully', async ({
+    page,
+    loginPage,
+    dashboardPage,
+  }) => {
+    await test.step('Verify that response token exists and email is correct', async () => {
+      const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
+      await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+
+      const response = await responsePromise;
+      const responseBody = await response.json();
+
+      expect(response.status()).toBe(STATUS_CODES.SUCCESS);
+      // Check token exists and email is correct
+      expect(responseBody.token || responseBody.access_token).toBeTruthy();
+      expect(responseBody.record.email).toBe(USER.USER_NAME);
     });
 
-    test('Verify that the user can log in successfully', async ({
+    await test.step('Verify dashboard loaded', async () => {
+      await dashboardPage.verifyDashboardLoaded();
+    });
+
+    await test.step('Logout from dashboard', async () => {
+      await dashboardPage.logout();
+    });
+  });
+
+  INVALID_CASES.forEach(({ field, email, password }) => {
+    test(`Verify that the user failed to log in with the wrong ${field}`, async ({
       page,
       loginPage,
-      dashboardPage,
     }) => {
       await test.step('Verify that response token exists and email is correct', async () => {
         const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
-        await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
+        await loginPage.form.loginAs(email, password);
 
         const response = await responsePromise;
         const responseBody = await response.json();
 
-        expect(response.status()).toBe(STATUS_CODES.SUCCESS);
+        expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
         // Check token exists and email is correct
-        expect(responseBody.token || responseBody.access_token).toBeTruthy();
-        expect(responseBody.record.email).toBe(USER.USER_NAME);
+        expect(responseBody.token || responseBody.access_token).toBeFalsy();
+        expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);
       });
 
-      await test.step('Verify dashboard loaded', async () => {
-        await dashboardPage.verifyDashboardLoaded();
-      });
-
-      await test.step('Logout from dashboard', async () => {
-        await dashboardPage.logout();
+      await test.step('Verify error message', async () => {
+        await loginPage.verifyToastMessage(MESSAGES.INVALID_LOGIN_CREDENTIALS);
       });
     });
-
-    INVALID_CASES.forEach(({ field, email, password }) => {
-      test(`Verify that the user failed to log in with the wrong ${field}`, async ({
-        page,
-        loginPage,
-      }) => {
-        await test.step('Verify that response token exists and email is correct', async () => {
-          const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
-          await loginPage.form.loginAs(email, password);
-
-          const response = await responsePromise;
-          const responseBody = await response.json();
-
-          expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
-          // Check token exists and email is correct
-          expect(responseBody.token || responseBody.access_token).toBeFalsy();
-          expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);
-        });
-
-        await test.step('Verify error message', async () => {
-          await loginPage.verifyToastMessage(MESSAGES.INVALID_LOGIN_CREDENTIALS);
-        });
-      });
-    });
-  },
-);
+  });
+});

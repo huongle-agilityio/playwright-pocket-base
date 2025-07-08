@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-
 // Constants
 import { BASE_URL } from '@/constants';
 
@@ -35,53 +34,29 @@ export default defineConfig({
 
     {
       name: 'chromium',
-      grep: /@private/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.auth/user.json',
+        storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
-      grep: /@private/,
       use: {
         ...devices['Desktop Firefox'],
-        storageState: 'playwright/.auth/user.json',
+        storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
-      grep: /@private/,
       use: {
         ...devices['Desktop Safari'],
-        storageState: 'playwright/.auth/user.json',
+        storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
-    },
-
-    {
-      name: 'chromium',
-      grep: /@public/,
-      grepInvert: /@setup/,
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      grep: /@public/,
-      grepInvert: /@setup/,
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      grep: /@public/,
-      grepInvert: /@setup/,
-      use: { ...devices['Desktop Safari'] },
     },
   ],
 });

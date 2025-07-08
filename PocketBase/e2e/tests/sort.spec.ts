@@ -30,7 +30,7 @@ const CASES: { columnName: keyof Table }[] = [
   },
 ];
 
-test.describe('Sort', { tag: '@private' }, () => {
+test.describe('Sort', () => {
   const mocks = generateMockUsers();
 
   test.beforeEach(async ({ dashboardPage }) => {
