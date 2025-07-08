@@ -13,7 +13,7 @@ import {
 } from '@/utils';
 
 test.describe('Edit user', () => {
-  const mocks = generateMockUsers();
+  const mocks = generateMockUsers(['edit1', 'edit2', 'edit3']);
 
   test.beforeEach(async ({ dashboardPage }) => {
     await dashboardPage.goto();

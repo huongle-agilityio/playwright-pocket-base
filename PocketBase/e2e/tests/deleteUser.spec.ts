@@ -13,7 +13,7 @@ import {
 } from '@/utils';
 
 test.describe('Delete user', () => {
-  const mocks = generateMockUsers();
+  const mocks = generateMockUsers(['delete1', 'delete2', 'delete3']);
 
   test.beforeEach(async ({ dashboardPage, searchInput }) => {
     await dashboardPage.goto();
