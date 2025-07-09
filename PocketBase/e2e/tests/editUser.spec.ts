@@ -15,13 +15,13 @@ import {
 test.describe('Edit user', () => {
   const mocks = generateMockUsers(['edit1', 'edit2', 'edit3']);
 
-  test.beforeEach(async ({ dashboardPage }) => {
+  test.beforeEach(async ({ dashboardPage, apiContext }) => {
     await dashboardPage.goto();
-    await createMockUsers(mocks);
+    await createMockUsers({ users: mocks, context: apiContext });
   });
 
-  test.afterEach(async ({ tablePage }) => {
-    await deleteMockUsers({ tablePage, users: mocks });
+  test.afterEach(async ({ tablePage, apiContext }) => {
+    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
   test('Verify that the user can update the email of the item they selected', async ({

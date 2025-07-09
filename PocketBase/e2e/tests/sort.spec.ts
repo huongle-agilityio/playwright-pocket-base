@@ -33,13 +33,13 @@ const CASES: { columnName: keyof Table }[] = [
 test.describe('Sort', () => {
   const mocks = generateMockUsers(['sort1', 'sort2', 'sort3']);
 
-  test.beforeEach(async ({ dashboardPage }) => {
+  test.beforeEach(async ({ dashboardPage, apiContext }) => {
     await dashboardPage.goto();
-    await createMockUsers(mocks);
+    await createMockUsers({ users: mocks, context: apiContext });
   });
 
-  test.afterEach(async ({ tablePage }) => {
-    await deleteMockUsers({ tablePage, users: mocks });
+  test.afterEach(async ({ tablePage, apiContext }) => {
+    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
   CASES.forEach(({ columnName }) => {

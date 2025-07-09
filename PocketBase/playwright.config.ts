@@ -1,13 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+
 // Constants
 import { BASE_URL } from '@/constants';
 
-// Utils
-import { extractAccessToken } from '@/utils';
-
-const accessToken = extractAccessToken();
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
@@ -25,7 +22,6 @@ export default defineConfig({
     trace: 'on-first-retry',
     extraHTTPHeaders: {
       Accept: 'application/json',
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   },
 
@@ -40,7 +36,6 @@ export default defineConfig({
       },
       dependencies: ['setup'],
     },
-
     {
       name: 'firefox',
       use: {
@@ -49,7 +44,6 @@ export default defineConfig({
       },
       dependencies: ['setup'],
     },
-
     {
       name: 'webkit',
       use: {

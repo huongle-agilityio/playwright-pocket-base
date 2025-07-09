@@ -1,5 +1,4 @@
 import { APIRequestContext, expect } from '@playwright/test';
-import { createApiContext } from './apis';
 
 // Pages
 import { TablePage } from '@/pages';
@@ -86,16 +85,15 @@ export const deleteAnUser = async ({
 export const deleteMockUsers = async ({
   tablePage,
   users,
+  context,
 }: {
   tablePage: TablePage;
   users: User[];
+  context: APIRequestContext;
 }) => {
-  const context = await createApiContext();
   for (const user of users) {
     await deleteAnUser({ tablePage, user, context });
   }
-
-  await context.dispose();
 };
 
 /**
@@ -103,12 +101,15 @@ export const deleteMockUsers = async ({
  *
  * @param {User[]} The array of users to create.
  */
-export const createMockUsers = async (users: User[]) => {
-  const context = await createApiContext();
+export const createMockUsers = async ({
+  users,
+  context,
+}: {
+  users: User[];
+  context: APIRequestContext;
+}) => {
   for (const user of users) {
     const response = await context.post(API_URLS.USER, { data: user });
     expect(response.status()).toBe(STATUS_CODES.SUCCESS);
   }
-
-  await context.dispose();
 };

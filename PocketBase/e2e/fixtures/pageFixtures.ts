@@ -1,5 +1,11 @@
-import { test as base, expect } from '@playwright/test';
+import { APIRequestContext, test as base, expect } from '@playwright/test';
 import { DashboardPage, LoginPage, UserForm, TablePage, SearchInput } from '../pages';
+
+// Constants
+import { BASE_URL } from '@/constants';
+
+// Utils
+import { extractAccessToken } from '@/utils';
 
 interface PagesFixture {
   userForm: UserForm;
@@ -7,9 +13,23 @@ interface PagesFixture {
   tablePage: TablePage;
   dashboardPage: DashboardPage;
   searchInput: SearchInput;
+  apiContext: APIRequestContext;
 }
 
 const test = base.extend<PagesFixture>({
+  apiContext: async ({ playwright }, use) => {
+    const token = extractAccessToken();
+    const context = await playwright.request.newContext({
+      baseURL: BASE_URL,
+      extraHTTPHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    await use(context);
+    await context.dispose(); // Auto cleanup after test
+  },
+
   loginPage: async ({ page }, use) => {
     const login = new LoginPage(page);
     await use(login);

@@ -1,10 +1,10 @@
-import { Page, request } from '@playwright/test';
+import { Page } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs';
 const authFilePath = path.resolve(__dirname, '../.auth/user.json');
 
 // Constants
-import { API_URLS, BASE_URL } from '@/constants';
+import { API_URLS } from '@/constants';
 
 /**
  * Extracts the access token from the auth file stored at the path specified by
@@ -38,22 +38,6 @@ export const extractAccessToken = () => {
   }
 
   return '';
-};
-
-/**
- * Creates a new API context with the base URL set to the environment variable
- * `BASE_URL` and the authorization header set to the environment variable
- * `ADMIN_TOKEN`. The created context is then returned.
- */
-export const createApiContext = async () => {
-  const token = extractAccessToken();
-
-  return await request.newContext({
-    baseURL: BASE_URL,
-    extraHTTPHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 };
 
 /**
