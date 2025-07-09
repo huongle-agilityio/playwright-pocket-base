@@ -15,19 +15,19 @@ import {
 test.describe('Delete user', () => {
   const mocks = generateMockUsers(['delete1', 'delete2', 'delete3']);
 
-  test.beforeEach(async ({ dashboardPage, searchInput }) => {
+  test.beforeEach(async ({ dashboardPage, searchInput, apiContext }) => {
     await dashboardPage.goto();
-    await createMockUsers(mocks);
+    await createMockUsers({ users: mocks, context: apiContext });
 
     if (await searchInput.clearButton.isVisible()) {
       await searchInput.clickClearButton();
     }
   });
 
-  test.afterEach(async ({ tablePage }) => {
+  test.afterEach(async ({ tablePage, apiContext }) => {
     await tablePage.waitForTableToLoad();
 
-    await deleteMockUsers({ tablePage, users: mocks });
+    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
   test('Verify that user can delete single item', async ({ dashboardPage, tablePage, page }) => {

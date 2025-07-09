@@ -7,7 +7,7 @@ import { API_URLS, MESSAGES, MOCK_USER, STATUS_CODES } from '@/constants';
 import { User } from '@/interfaces';
 
 // Utils
-import { createApiContext, deleteAnUser, waitForPostResponse } from '@/utils';
+import { deleteAnUser, waitForPostResponse } from '@/utils';
 
 const INVALID_FIELD_CASES = [
   {
@@ -66,9 +66,8 @@ test.describe('Add new user', () => {
     await userForm.verifyTitle('New users record');
   });
 
-  test.afterEach(async ({ tablePage }) => {
-    const context = await createApiContext();
-    await deleteAnUser({ tablePage, user: MOCK_USER, context });
+  test.afterEach(async ({ tablePage, apiContext }) => {
+    await deleteAnUser({ tablePage, user: MOCK_USER, context: apiContext });
   });
 
   test("Verify that the user can't create user with empty inputs", async ({ userForm }) => {
@@ -170,10 +169,10 @@ test.describe('Add new user', () => {
   });
 
   INVALID_FIELD_CASES.forEach(({ field, message, title, payload, preStep }) => {
-    test(title, async ({ page, dashboardPage, userForm, request }) => {
+    test(title, async ({ page, dashboardPage, userForm, apiContext }) => {
       if (preStep) {
         await test.step('Pre-step fill form with required inputs', async () => {
-          await request.post(API_URLS.USER, { data: payload });
+          await apiContext.post(API_URLS.USER, { data: payload });
         });
       }
 
@@ -196,7 +195,7 @@ test.describe('Add new user', () => {
       });
 
       await test.step('Delete user from pre-step', async () => {
-        await request.delete(`${API_URLS.USER}/${payload.id}`);
+        await apiContext.delete(`${API_URLS.USER}/${payload.id}`);
       });
     });
   });
