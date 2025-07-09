@@ -18,6 +18,7 @@ jobs:
       INVALID_USER_NAME: ${{ vars.INVALID_USER_NAME }}
       INVALID_PASSWORD: ${{ vars.INVALID_PASSWORD }}
       BASE_URL: ${{ vars.BASE_URL }}
+      CI: ${{ vars.CI }}
     defaults:
       run:
         working-directory: ./PocketBase
@@ -36,6 +37,7 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
+          envkey_CI: ${{ vars.CI }}
           envkey_USER_NAME: ${{ vars.USER_NAME }}
           envkey_PASSWORD: ${{ vars.PASSWORD }}
           envkey_INVALID_USER_NAME: ${{ vars.INVALID_USER_NAME }}
