@@ -75,7 +75,7 @@ test.describe('Search', () => {
     searchInput,
     tablePage,
   }) => {
-    const searchValue = 'test';
+    const searchValue = 'search';
 
     await test.step('Search for a user', async () => {
       await searchInput.search(searchValue);

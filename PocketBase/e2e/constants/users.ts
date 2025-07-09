@@ -1,5 +1,5 @@
 // Interfaces
-import { User } from '@/interfaces';
+import { Table, User } from '@/interfaces';
 
 // Utils
 import { generateUserId } from '@/utils';
@@ -18,3 +18,14 @@ export const MOCK_USER: User = {
   password: 'test123@',
   passwordConfirm: 'test123@',
 };
+
+export const VALID_COLUMNS: (keyof Table)[] = [
+  'id',
+  'email',
+  'emailVisibility',
+  'verified',
+  'username',
+  'name',
+  'avatar',
+  'website',
+];
