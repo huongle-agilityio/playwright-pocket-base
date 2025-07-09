@@ -34,18 +34,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_CI: ${{ vars.CI }}
-          envkey_USER_NAME: ${{ vars.USER_NAME }}
-          envkey_PASSWORD: ${{ vars.PASSWORD }}
-          envkey_INVALID_USER_NAME: ${{ vars.INVALID_USER_NAME }}
-          envkey_INVALID_PASSWORD: ${{ vars.INVALID_PASSWORD }}
-          envkey_BASE_URL: ${{ vars.BASE_URL }}
-          directory: ./PocketBase
-          file_name: .env
-
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
