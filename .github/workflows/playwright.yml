@@ -5,6 +5,7 @@ on:
     branches: [feature/pocket-base]
   pull_request:
     branches: [feature/pocket-base]
+  workflow_dispatch:
 
 jobs:
   test-and-deploy:
