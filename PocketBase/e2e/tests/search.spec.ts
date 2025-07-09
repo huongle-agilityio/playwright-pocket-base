@@ -9,15 +9,15 @@ import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse
 test.describe('Search', () => {
   const mocks = generateMockUsers(['search1', 'search2', 'search33']);
 
-  test.beforeEach(async ({ dashboardPage, searchInput }) => {
+  test.beforeEach(async ({ dashboardPage, searchInput, apiContext }) => {
     await dashboardPage.goto();
-    await createMockUsers(mocks);
+    await createMockUsers({ users: mocks, context: apiContext });
     await searchInput.clickClearButton();
   });
 
-  test.afterEach(async ({ dashboardPage, tablePage }) => {
+  test.afterEach(async ({ dashboardPage, tablePage, apiContext }) => {
     await dashboardPage.verifyDashboardLoaded();
-    await deleteMockUsers({ tablePage, users: mocks });
+    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
   test('Verify that the user can search users with a matching email', async ({
