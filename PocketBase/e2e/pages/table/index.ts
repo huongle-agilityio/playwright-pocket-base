@@ -1,5 +1,8 @@
 import { expect, Locator, Page } from '@playwright/test';
 
+// Constants
+import { VALID_COLUMNS } from '@/constants';
+
 // Interfaces
 import { User, Table } from '@/interfaces';
 
@@ -207,9 +210,11 @@ export class TablePage {
   async extractRowData({
     columnName,
     value,
+    validColumns = VALID_COLUMNS,
   }: {
     columnName: keyof Table;
     value: string;
+    validColumns?: (keyof Table)[];
   }): Promise<Record<string, string>[]> {
     const cells = (await this.getRowByValue({ columnName, value })).locator('td');
     const count = await cells.count();
@@ -221,12 +226,13 @@ export class TablePage {
       const classAttr = await cell.getAttribute('class');
       const match = classAttr?.match(/col-field-([a-zA-Z0-9_]+)/);
 
-      if (match) {
-        const columnName = match[1];
-        if (columnName === 'created' || columnName === 'updated') continue;
-        const value = (await cell.innerText()).trim();
-        result.push({ [columnName]: value });
-      }
+      if (!match) continue;
+
+      const key = match[1] as keyof Table;
+      if (!validColumns.includes(key)) continue;
+
+      const text = (await cell.innerText()).trim();
+      result.push({ [key]: text });
     }
 
     return result;
