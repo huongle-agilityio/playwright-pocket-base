@@ -50,7 +50,7 @@ This is a sample project for Playwright training, demonstrating how to use Playw
 1. Make sure you install packages with correct version below:
 
 - node v20.18.0
-- npm 10.8.2
+- npm 10.8.2 or pnpm 9.15.9
 
 2. Redirect to folder
 
@@ -61,7 +61,7 @@ cd PocketBase
 3. Install Dependencies
 
 ```
-npm install
+npm install / pnpm install
 ```
 
 4. Create a `.env` file in the root directory of the project and add the following environment variables:
@@ -79,29 +79,29 @@ BASE_URL=https://pocketbase.io
 1. Run all Tests
 
 ```
-npx playwright test
+npm run test / pnpm test
 ```
 
 2. Run Tests by file
 
 ```
-npx playwright test login.spec.ts
+npx playwright test login.spec.ts / pnpm exec playwright test login.spec.ts
 ```
 
 3. Run Tests with UI mode
 
 ```
-npx playwright test --ui
+npx playwright test --ui / pnpm exec playwright test --ui
 ```
 
 4. Debug Tests
 
 ```
-npx playwright test --debug
+npx playwright test --debug / pnpm exec playwright test --debug
 ```
 
 5. View HTML Report
 
 ```
-npx playwright show-report
+npx playwright show-report / pnpm exec playwright show-report
 ```
