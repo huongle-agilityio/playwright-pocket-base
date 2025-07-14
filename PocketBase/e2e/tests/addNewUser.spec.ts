@@ -9,56 +9,6 @@ import { User } from '@/interfaces';
 // Utils
 import { deleteAnUser, waitForPostResponse } from '@/utils';
 
-const INVALID_FIELD_CASES = [
-  {
-    field: 'username',
-    title:
-      "Verify that the user can't create a new user when typing a username of less than 3 characters",
-    payload: {
-      ...MOCK_USER,
-      username: 'lo',
-    },
-    message: MESSAGES.LIMIT_CHARACTERS(),
-  },
-  {
-    field: 'username',
-    title: "Verify that the user can't create a new user when typing the wrong username",
-    payload: {
-      ...MOCK_USER,
-      username: 'lorem lorem',
-    },
-    message: MESSAGES.INVALID_FORMAT,
-  },
-  {
-    field: 'email',
-    title: "Verify that the user can't create a new user when typing a wrong format email",
-    payload: {
-      ...MOCK_USER,
-      email: 'test555@g',
-    },
-    message: MESSAGES.INVALID_EMAIL,
-  },
-  {
-    field: 'id',
-    title: "Verify that the user can't create a new user when typing the wrong format ID",
-    payload: {
-      ...MOCK_USER,
-      id: 'lorem aaaabdada',
-    },
-    message: MESSAGES.INVALID_FORMAT,
-  },
-  {
-    field: 'email',
-    title: "Verify that the user can't create a user when the email already exists",
-    preStep: true,
-    payload: {
-      ...MOCK_USER,
-      email: 'test10@example.com',
-    },
-    message: MESSAGES.UNIQUE_VALUE,
-  },
-];
-
 test.describe('Add new user', () => {
   test.beforeEach(async ({ dashboardPage, userForm }) => {
     await dashboardPage.goto();
@@ -167,6 +117,56 @@ test.describe('Add new user', () => {
       await dashboardPage.verifyToastMessage(MESSAGES.FAILED_TO_CREATE_RECORD);
     });
   });
+
+  const INVALID_FIELD_CASES = [
+    {
+      field: 'username',
+      title:
+        "Verify that the user can't create a new user when typing a username of less than 3 characters",
+      payload: {
+        ...MOCK_USER,
+        username: 'lo',
+      },
+      message: MESSAGES.LIMIT_CHARACTERS(),
+    },
+    {
+      field: 'username',
+      title: "Verify that the user can't create a new user when typing the wrong username",
+      payload: {
+        ...MOCK_USER,
+        username: 'lorem lorem',
+      },
+      message: MESSAGES.INVALID_FORMAT,
+    },
+    {
+      field: 'email',
+      title: "Verify that the user can't create a new user when typing a wrong format email",
+      payload: {
+        ...MOCK_USER,
+        email: 'test555@g',
+      },
+      message: MESSAGES.INVALID_EMAIL,
+    },
+    {
+      field: 'id',
+      title: "Verify that the user can't create a new user when typing the wrong format ID",
+      payload: {
+        ...MOCK_USER,
+        id: 'lorem aaaabdada',
+      },
+      message: MESSAGES.INVALID_FORMAT,
+    },
+    {
+      field: 'email',
+      title: "Verify that the user can't create a user when the email already exists",
+      preStep: true,
+      payload: {
+        ...MOCK_USER,
+        email: 'test10@example.com',
+      },
+      message: MESSAGES.UNIQUE_VALUE,
+    },
+  ];
 
   INVALID_FIELD_CASES.forEach(({ field, message, title, payload, preStep }) => {
     test(title, async ({ page, dashboardPage, userForm, apiContext }) => {

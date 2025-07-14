@@ -8,19 +8,6 @@ import { waitForPostResponse } from '@/utils';
 
 test.describe.configure({ timeout: 90_000 });
 
-const INVALID_CASES = [
-  {
-    field: 'username',
-    email: USER.INVALID_USER_NAME,
-    password: USER.PASSWORD,
-  },
-  {
-    field: 'password',
-    email: USER.USER_NAME,
-    password: USER.INVALID_PASSWORD,
-  },
-];
-
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe('Login', () => {
@@ -46,6 +33,19 @@ test.describe('Login', () => {
       await dashboardPage.verifyDashboardLoaded();
     });
   });
+
+  const INVALID_CASES = [
+    {
+      field: 'username',
+      email: USER.INVALID_USER_NAME,
+      password: USER.PASSWORD,
+    },
+    {
+      field: 'password',
+      email: USER.USER_NAME,
+      password: USER.INVALID_PASSWORD,
+    },
+  ];
 
   INVALID_CASES.forEach(({ field, email, password }) => {
     test(`Failure with the invalid ${field}`, async ({ page, loginPage }) => {
