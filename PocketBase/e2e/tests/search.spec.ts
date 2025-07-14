@@ -66,9 +66,7 @@ test.describe('Search', () => {
       }).toPass({ timeout: 5000 });
     });
 
-    await test.step('Clear input filters', async () => {
-      await searchInput.clickClearButton();
-    });
+    await searchInput.clickClearButton();
   });
 
   test('Verify that the user can search users with half of the matching text', async ({
@@ -95,9 +93,7 @@ test.describe('Search', () => {
       }
     });
 
-    await test.step('Clear input filters', async () => {
-      await searchInput.clickClearButton();
-    });
+    await searchInput.clickClearButton();
   });
 
   test('Verify that the user can search for users with the unmatched text', async ({
@@ -116,9 +112,7 @@ test.describe('Search', () => {
       await expect(tablePage.buttonClearFilters()).toBeVisible();
     });
 
-    await test.step('Clear input filters', async () => {
-      await searchInput.clickClearButton();
-    });
+    await searchInput.clickClearButton();
   });
 
   test('Verify user can see all users when clicking the clear button in the table', async ({
