@@ -194,9 +194,7 @@ test.describe('Add new user', () => {
         await userForm.verifyErrorMessage(message);
       });
 
-      await test.step('Delete user from pre-step', async () => {
-        await apiContext.delete(`${API_URLS.USER}/${payload.id}`);
-      });
+      await apiContext.delete(`${API_URLS.USER}/${payload.id}`);
     });
   });
 });

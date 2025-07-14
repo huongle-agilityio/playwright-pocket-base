@@ -28,12 +28,8 @@ test.describe('Login', () => {
     await loginPage.goto();
   });
 
-  test('Verify that the user can log in successfully', async ({
-    page,
-    loginPage,
-    dashboardPage,
-  }) => {
-    await test.step('Verify that response token exists and email is correct', async () => {
+  test('Success with valid inputs', async ({ page, loginPage, dashboardPage }) => {
+    await test.step('Submit form with valid inputs', async () => {
       const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
       await loginPage.form.loginAs(USER.USER_NAME, USER.PASSWORD);
 
@@ -46,21 +42,14 @@ test.describe('Login', () => {
       expect(responseBody.record.email).toBe(USER.USER_NAME);
     });
 
-    await test.step('Verify dashboard loaded', async () => {
+    await test.step('Dashboard is loaded', async () => {
       await dashboardPage.verifyDashboardLoaded();
-    });
-
-    await test.step('Logout from dashboard', async () => {
-      await dashboardPage.logout();
     });
   });
 
   INVALID_CASES.forEach(({ field, email, password }) => {
-    test(`Verify that the user failed to log in with the wrong ${field}`, async ({
-      page,
-      loginPage,
-    }) => {
-      await test.step('Verify that response token exists and email is correct', async () => {
+    test(`Failure with the invalid ${field}`, async ({ page, loginPage }) => {
+      await test.step(`Submit form with invalid ${field} input`, async () => {
         const responsePromise = waitForPostResponse({ url: API_URLS.LOGIN, page });
         await loginPage.form.loginAs(email, password);
 
@@ -73,9 +62,23 @@ test.describe('Login', () => {
         expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);
       });
 
-      await test.step('Verify error message', async () => {
+      await test.step('Error message is displayed', async () => {
         await loginPage.verifyToastMessage(MESSAGES.INVALID_LOGIN_CREDENTIALS);
       });
+    });
+  });
+
+  test('With empty inputs', async ({ loginPage }) => {
+    await test.step('Submit form with empty inputs', async () => {
+      await loginPage.form.loginAs('', '');
+    });
+
+    await test.step('The input is invalid', async () => {
+      const isValid = await loginPage.form.email.evaluate((input: HTMLInputElement) =>
+        input.checkValidity(),
+      );
+
+      expect(isValid).toBe(false);
     });
   });
 });
