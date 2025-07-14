@@ -45,8 +45,6 @@ test.describe('Login', () => {
     await test.step('Dashboard is loaded', async () => {
       await dashboardPage.verifyDashboardLoaded();
     });
-
-    await dashboardPage.logout();
   });
 
   INVALID_CASES.forEach(({ field, email, password }) => {
