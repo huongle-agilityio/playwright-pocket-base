@@ -9,27 +9,6 @@ import { Table, User } from '@/interfaces';
 // Utils
 import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse } from '@/utils';
 
-const CASES: { columnName: keyof Table }[] = [
-  {
-    columnName: 'id',
-  },
-  {
-    columnName: 'email',
-  },
-  {
-    columnName: 'emailVisibility',
-  },
-  {
-    columnName: 'username',
-  },
-  {
-    columnName: 'name',
-  },
-  {
-    columnName: 'website',
-  },
-];
-
 test.describe('Sort', () => {
   const mocks = generateMockUsers(['sort1', 'sort2', 'sort3']);
 
@@ -41,6 +20,27 @@ test.describe('Sort', () => {
   test.afterEach(async ({ tablePage, apiContext }) => {
     await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
+
+  const CASES: { columnName: keyof Table }[] = [
+    {
+      columnName: 'id',
+    },
+    {
+      columnName: 'email',
+    },
+    {
+      columnName: 'emailVisibility',
+    },
+    {
+      columnName: 'username',
+    },
+    {
+      columnName: 'name',
+    },
+    {
+      columnName: 'website',
+    },
+  ];
 
   CASES.forEach(({ columnName }) => {
     test(`Verify that the user can sort the ${columnName} column alphabetical order after clicking the column header.`, async ({
