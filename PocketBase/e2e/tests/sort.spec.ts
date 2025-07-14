@@ -43,13 +43,13 @@ test.describe('Sort', () => {
   ];
 
   CASES.forEach(({ columnName }) => {
-    test(`Verify that the user can sort the ${columnName} column alphabetical order after clicking the column header.`, async ({
+    test(`Successfully sort the ${columnName} column alphabetical order`, async ({
       page,
       tablePage,
     }) => {
       let expectedSorted;
 
-      await test.step(`Click on the column ${columnName} on the header and verify that the response list items match with the list items in UI`, async () => {
+      await test.step(`Click on the column ${columnName} on the header`, async () => {
         const responsePromise = waitForGetResponse({ url: `sort=-${columnName}`, page });
 
         await tablePage.getColumn(columnName).click();
@@ -69,7 +69,7 @@ test.describe('Sort', () => {
         expect(data).toEqual(expectedSorted);
       });
 
-      await test.step(`Verify that the ${columnName} column is sorted in alphabetical order`, async () => {
+      await test.step(`The ${columnName} column is sorted in alphabetical order`, async () => {
         await tablePage.waitForTableToLoad();
         const values = await tablePage.getAllValueCellByColumnName(columnName);
         const filteredValues = values.filter((item) => expectedSorted.includes(item));

@@ -20,7 +20,7 @@ test.describe('Search', () => {
     await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
-  test('Verify that the user can search users with a matching email', async ({
+  test('Successfully search users with a matching email', async ({
     page,
     searchInput,
     tablePage,
@@ -42,7 +42,7 @@ test.describe('Search', () => {
       responseBody = await response.json();
     });
 
-    await test.step('Wait for table to load and verify content', async () => {
+    await test.step('The user with the matching text appears', async () => {
       await expect(async () => {
         const userRow = await tablePage.extractRowData({
           columnName: 'email',
@@ -69,17 +69,14 @@ test.describe('Search', () => {
     await searchInput.clickClearButton();
   });
 
-  test('Verify that the user can search users with half of the matching text', async ({
-    searchInput,
-    tablePage,
-  }) => {
+  test('Successfully search with half of the matching text', async ({ searchInput, tablePage }) => {
     const searchValue = 'search';
 
     await test.step('Search for a user', async () => {
       await searchInput.search(searchValue);
     });
 
-    await test.step('Verify still have user matched with half of the matching text', async () => {
+    await test.step('The user with the matching text appears', async () => {
       const rows = await tablePage.getMultipleRowsByValue({
         columnName: 'email',
         value: searchValue,
@@ -96,7 +93,7 @@ test.describe('Search', () => {
     await searchInput.clickClearButton();
   });
 
-  test('Verify that the user can search for users with the unmatched text', async ({
+  test('Successfully search for users with the unmatched text', async ({
     searchInput,
     tablePage,
   }) => {
@@ -105,7 +102,7 @@ test.describe('Search', () => {
       await searchInput.search(searchValue);
     });
 
-    await test.step('Verify no user matched', async () => {
+    await test.step('No user appears in the table', async () => {
       await tablePage.waitForTableToLoad();
       expect(await tablePage.getLength()).toBe(0);
       await tablePage.verifyMessage('No records found.');
@@ -115,7 +112,7 @@ test.describe('Search', () => {
     await searchInput.clickClearButton();
   });
 
-  test('Verify user can see all users when clicking the clear button in the table', async ({
+  test('Successfully clear filters when clicking the clear button', async ({
     searchInput,
     tablePage,
   }) => {
@@ -124,13 +121,13 @@ test.describe('Search', () => {
       await searchInput.search(searchValue);
     });
 
-    await test.step('Clear filters with the clear button in the table', async () => {
+    await test.step('Clear filters with the clear button', async () => {
       await tablePage.waitForTableToLoad();
       await tablePage.buttonClearFilters().click();
       await expect(searchInput.input).not.toHaveText(searchValue);
     });
 
-    await test.step('Verify user can see all users', async () => {
+    await test.step('All users appear in the table', async () => {
       expect(await tablePage.getLength()).toBeGreaterThan(0);
       await expect(tablePage.buttonClearFilters()).not.toBeVisible();
     });
