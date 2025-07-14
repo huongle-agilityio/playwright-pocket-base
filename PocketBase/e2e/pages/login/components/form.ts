@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
 
-export class Form {
+export class LoginForm {
   readonly email;
   readonly password;
 

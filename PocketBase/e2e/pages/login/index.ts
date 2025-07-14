@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { Form } from './components/form';
+import { LoginForm } from './components/form';
 
 export class LoginPage {
   readonly page;
@@ -7,7 +7,7 @@ export class LoginPage {
 
   constructor(page) {
     this.page = page;
-    this.form = new Form(this.page.frameLocator('iframe'));
+    this.form = new LoginForm(this.page.frameLocator('iframe'));
   }
 
   private get frame() {
