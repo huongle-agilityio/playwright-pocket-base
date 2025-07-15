@@ -3,30 +3,11 @@ import { expect, test } from '@/fixtures';
 // Constants
 import { API_URLS, MESSAGES, MOCK_USER, STATUS_CODES } from '@/constants';
 
-// Pages
-import { DashboardPage, TablePage } from '@/pages';
-
 // Interfaces
 import { User } from '@/interfaces';
 
 // Utils
 import { deleteAnUser, waitForPostResponse } from '@/utils';
-
-const userIsCreatedSuccessfully = async ({
-  user,
-  tablePage,
-  dashboardPage,
-}: {
-  user: User;
-  tablePage: TablePage;
-  dashboardPage: DashboardPage;
-}) => {
-  await test.step('User appears in the table and toast message is displayed', async () => {
-    await tablePage.waitForTableToLoad();
-    await tablePage.verifyUserRow(user);
-    await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
-  });
-};
 
 test.describe('Add new user', () => {
   test.beforeEach(async ({ dashboardPage, userForm }) => {
@@ -83,7 +64,11 @@ test.describe('Add new user', () => {
       expect(responseBody.id).toBe(MOCK_USER.id);
     });
 
-    await userIsCreatedSuccessfully({ user: MOCK_USER, tablePage, dashboardPage });
+    await test.step('User appears in the table and toast message is displayed', async () => {
+      await tablePage.waitForTableToLoad();
+      await tablePage.verifyUserRow(MOCK_USER);
+      await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
+    });
   });
 
   test('Successfully with filling in all the inputs', async ({
@@ -103,7 +88,11 @@ test.describe('Add new user', () => {
       await userForm.fillForm(payload);
     });
 
-    await userIsCreatedSuccessfully({ user: payload, tablePage, dashboardPage });
+    await test.step('User appears in the table and toast message is displayed', async () => {
+      await tablePage.waitForTableToLoad();
+      await tablePage.verifyUserRow(payload);
+      await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
+    });
   });
 
   test('Failure with no permission to upload avatar', async ({ dashboardPage, userForm }) => {
