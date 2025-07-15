@@ -24,7 +24,7 @@ test.describe('Edit user', () => {
     await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
   });
 
-  test('Verify that the user can update the email of the item they selected', async ({
+  test('Successfully update the user with selected email', async ({
     tablePage,
     page,
     userForm,
@@ -35,7 +35,7 @@ test.describe('Edit user', () => {
     let responseBody;
     const newEmail = `test${generateUserId()}@gmail.com`;
 
-    await test.step('Verify that the user can see the user in the table', async () => {
+    await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
       await expect(row).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('Edit user', () => {
       responseBody = await response.json();
     });
 
-    await test.step('Verify that the email is updated', async () => {
+    await test.step('The the selected email is updated and success message is displayed', async () => {
       expect(response.status()).toBe(STATUS_CODES.SUCCESS);
       await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_UPDATED_RECORD);
       expect(responseBody.email).toBe(newEmail);
@@ -84,7 +84,7 @@ test.describe('Edit user', () => {
     });
   });
 
-  test('Verify that the user can update the email of the item they selected and stay in the modal to continue updating', async ({
+  test('Successfully update the user with the selected, and continue updating', async ({
     tablePage,
     userForm,
     dashboardPage,
@@ -92,7 +92,7 @@ test.describe('Edit user', () => {
     let row;
     const newEmail = `test${generateUserId()}@gmail.com`;
 
-    await test.step('Verify that the user can see the user in the table', async () => {
+    await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
       await expect(row).toBeVisible();
@@ -108,7 +108,7 @@ test.describe('Edit user', () => {
       await userForm.saveAndContinue();
     });
 
-    await test.step('Verify that the email is updated', async () => {
+    await test.step('The the selected email is updated and success message is displayed', async () => {
       await userForm.verifyTitle('Edit users record');
       await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_UPDATED_RECORD);
       const updatedRow = await tablePage.getRowByValue({
@@ -119,7 +119,7 @@ test.describe('Edit user', () => {
     });
   });
 
-  test("Verify that user can't update email if the email already exist", async ({
+  test('Failure update email if the email already exist', async ({
     tablePage,
     page,
     userForm,
@@ -130,7 +130,7 @@ test.describe('Edit user', () => {
     let responseBody;
     const newEmail = mocks[0].email;
 
-    await test.step('Verify that the user can see the user in the table', async () => {
+    await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
       row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
       await expect(row).toBeVisible();
@@ -151,7 +151,7 @@ test.describe('Edit user', () => {
       responseBody = await response.json();
     });
 
-    await test.step('Verify that the response return error message', async () => {
+    await test.step('Error message is displayed and response status code is Bad Request', async () => {
       await userForm.verifyTitle('Edit users record');
       expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
       await userForm.verifyErrorMessage(MESSAGES.UNIQUE_VALUE);

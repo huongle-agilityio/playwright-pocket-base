@@ -20,19 +20,17 @@ test.describe('Add new user', () => {
     await deleteAnUser({ tablePage, user: MOCK_USER, context: apiContext });
   });
 
-  test("Verify that the user can't create user with empty inputs", async ({ userForm }) => {
-    await test.step('Submit form with empty inputs', async () => {
+  test('Failure with empty inputs', async ({ userForm }) => {
+    await test.step('Submit form', async () => {
       await userForm.submit();
     });
 
-    await test.step('Verify that the form is not closed', async () => {
+    await test.step('The form is not closed', async () => {
       await userForm.verifyTitle('New users record');
     });
   });
 
-  test('Verify that the user can leave the form while the form has values', async ({
-    userForm,
-  }) => {
+  test('Leave the form while filling it', async ({ userForm }) => {
     await test.step('Cancel form with filled inputs', async () => {
       await userForm.email.fill(MOCK_USER.email);
       await userForm.cancel();
@@ -42,19 +40,19 @@ test.describe('Add new user', () => {
       await userForm.page.getByRole('button', { name: 'Yes' }).click();
     });
 
-    await test.step('Verify that the form is not closed', async () => {
+    await test.step('The form is not closed', async () => {
       const title = userForm.page.getByRole('heading', { name: 'New users record' });
       await expect(title).not.toBeVisible();
     });
   });
 
-  test('Verify that the user can add a new user with the required inputs', async ({
+  test('Successfully with filling the required inputs', async ({
     page,
     userForm,
     dashboardPage,
     tablePage,
   }) => {
-    await test.step('Fill form with required inputs and verify returned data matches input', async () => {
+    await test.step('Fill form with required inputs', async () => {
       const responsePromise = waitForPostResponse({ url: API_URLS.USER, page });
       await userForm.fillForm(MOCK_USER);
 
@@ -66,14 +64,14 @@ test.describe('Add new user', () => {
       expect(responseBody.id).toBe(MOCK_USER.id);
     });
 
-    await test.step('Verify toast message and user appear in the table', async () => {
+    await test.step('User appears in the table and toast message is displayed', async () => {
       await tablePage.waitForTableToLoad();
       await tablePage.verifyUserRow(MOCK_USER);
       await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
     });
   });
 
-  test('Verify that the user can add a new user by filling in all the inputs', async ({
+  test('Successfully with filling in all the inputs', async ({
     dashboardPage,
     userForm,
     tablePage,
@@ -86,33 +84,30 @@ test.describe('Add new user', () => {
       website: 'https://example.com',
     };
 
-    await test.step('Fill form with all inputs expect avatar', async () => {
+    await test.step('Fill the form with all inputs except the avatar', async () => {
       await userForm.fillForm(payload);
     });
 
-    await test.step('Verify toast message and user appear in the table', async () => {
+    await test.step('User appears in the table and toast message is displayed', async () => {
       await tablePage.waitForTableToLoad();
       await tablePage.verifyUserRow(payload);
       await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_CREATED_RECORD);
     });
   });
 
-  test(`Verify that the user can't upload an avatar after clicking the button Create`, async ({
-    dashboardPage,
-    userForm,
-  }) => {
+  test('Failure with no permission to upload avatar', async ({ dashboardPage, userForm }) => {
     const payload: User = {
       ...MOCK_USER,
       avatar: 'test-image.png',
     };
 
-    await test.step('Fill form with all inputs expect avatar', async () => {
+    await test.step('Fill the form with the provided avatar', async () => {
       await userForm.fillForm(payload);
 
       await userForm.verifyTitle('New users record');
     });
 
-    await test.step('Verify error messages', async () => {
+    await test.step('Error message is displayed', async () => {
       await userForm.verifyErrorMessage(/test-image.*mime type must be one of: NO_UPLOADS_ALLOWED/);
       await dashboardPage.verifyToastMessage(MESSAGES.FAILED_TO_CREATE_RECORD);
     });
@@ -121,8 +116,7 @@ test.describe('Add new user', () => {
   const INVALID_FIELD_CASES = [
     {
       field: 'username',
-      title:
-        "Verify that the user can't create a new user when typing a username of less than 3 characters",
+      title: 'Failure when typing a username of less than 3 characters',
       payload: {
         ...MOCK_USER,
         username: 'lo',
@@ -131,7 +125,7 @@ test.describe('Add new user', () => {
     },
     {
       field: 'username',
-      title: "Verify that the user can't create a new user when typing the wrong username",
+      title: 'Failure when typing the wrong username',
       payload: {
         ...MOCK_USER,
         username: 'lorem lorem',
@@ -140,7 +134,7 @@ test.describe('Add new user', () => {
     },
     {
       field: 'email',
-      title: "Verify that the user can't create a new user when typing a wrong format email",
+      title: 'Failure when typing a wrong format email',
       payload: {
         ...MOCK_USER,
         email: 'test555@g',
@@ -149,7 +143,7 @@ test.describe('Add new user', () => {
     },
     {
       field: 'id',
-      title: "Verify that the user can't create a new user when typing the wrong format ID",
+      title: 'Failure when typing the wrong format ID',
       payload: {
         ...MOCK_USER,
         id: 'lorem aaaabdada',
@@ -158,7 +152,7 @@ test.describe('Add new user', () => {
     },
     {
       field: 'email',
-      title: "Verify that the user can't create a user when the email already exists",
+      title: 'Failure when the email already exists',
       preStep: true,
       payload: {
         ...MOCK_USER,
@@ -176,7 +170,7 @@ test.describe('Add new user', () => {
         });
       }
 
-      await test.step(`Fill form with invalid ${field} and verify that the response return error message`, async () => {
+      await test.step(`Fill form with invalid ${field}`, async () => {
         const responsePromise = waitForPostResponse({ url: API_URLS.USER, page });
         await userForm.fillForm(payload);
 
@@ -189,7 +183,7 @@ test.describe('Add new user', () => {
         expect(responseBody.message).toBe(MESSAGES.FAILED_TO_CREATE_RECORD);
       });
 
-      await test.step('Verify error messages', async () => {
+      await test.step('Error message is displayed', async () => {
         await dashboardPage.verifyToastMessage(MESSAGES.FAILED_TO_CREATE_RECORD);
         await userForm.verifyErrorMessage(message);
       });
