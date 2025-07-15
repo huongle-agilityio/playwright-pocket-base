@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as OTPAuth from 'otpauth';
 const authFilePath = path.resolve(__dirname, '../.auth/user.json');
 
 // Constants
@@ -104,3 +105,38 @@ export const waitForDeleteMultipleResponse = ({ page }: { page: Page }) =>
       res.request().method() === 'DELETE' &&
       res.status() === 204,
   );
+
+/**
+ * Extracts the secret from an OTPAuth URL.
+ *
+ * @param {string} otpUrl - The OTPAuth URL to extract the secret from.
+ * @returns {string} The extracted secret.
+ * @throws {Error} If the secret could not be extracted from the given URL.
+ */
+export const extractSecretFromOtpAuthUrl = (otpUrl: string): string => {
+  const url = new URL(otpUrl);
+  const secret = url.searchParams.get('secret');
+
+  if (!secret) {
+    throw new Error('Could not extract secret from OTPAuth URL');
+  }
+
+  return secret;
+};
+
+/**
+ * Generates a Time-Based One-Time Password (TOTP) given a secret.
+ *
+ * @param {string} secret - The secret to use for generating the TOTP.
+ * @returns {string} The generated TOTP.
+ */
+export const generateOTP = (secret: string): string => {
+  const totp = new OTPAuth.TOTP({
+    secret: OTPAuth.Secret.fromBase32(secret),
+    digits: 6,
+    algorithm: 'SHA1',
+    period: 30,
+  });
+
+  return totp.generate();
+};
