@@ -1,17 +1,13 @@
 import { expect } from '@playwright/test';
 import { LoginForm } from './components/form';
+import { BasePage } from '../base';
 
-export class LoginPage {
-  readonly page;
+export class LoginPage extends BasePage {
   readonly form;
 
   constructor(page) {
-    this.page = page;
+    super(page);
     this.form = new LoginForm(this.page.frameLocator('iframe'));
-  }
-
-  private get frame() {
-    return this.page.frameLocator('iframe');
   }
 
   async goto() {
@@ -24,15 +20,5 @@ export class LoginPage {
   async verifyLoginLoaded() {
     const loginText = this.frame.getByRole('heading', { name: 'Superuser login' });
     await expect(loginText).toBeVisible();
-  }
-
-  /**
-   * Verifies that a toast message with the specified text is visible on the page.
-   *
-   * @param message - The text of the toast message to verify.
-   */
-  async verifyToastMessage(message: string) {
-    const toastMessage = this.frame.getByText(message);
-    await expect(toastMessage).toBeVisible();
   }
 }
