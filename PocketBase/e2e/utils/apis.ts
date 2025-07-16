@@ -107,24 +107,6 @@ export const waitForDeleteMultipleResponse = ({ page }: { page: Page }) =>
   );
 
 /**
- * Extracts the secret from an OTPAuth URL.
- *
- * @param {string} otpUrl - The OTPAuth URL to extract the secret from.
- * @returns {string} The extracted secret.
- * @throws {Error} If the secret could not be extracted from the given URL.
- */
-export const extractSecretFromOtpAuthUrl = (otpUrl: string): string => {
-  const url = new URL(otpUrl);
-  const secret = url.searchParams.get('secret');
-
-  if (!secret) {
-    throw new Error('Could not extract secret from OTPAuth URL');
-  }
-
-  return secret;
-};
-
-/**
  * Generates a Time-Based One-Time Password (TOTP) given a secret.
  *
  * @param {string} secret - The secret to use for generating the TOTP.

@@ -5,7 +5,7 @@ import { test } from '@/fixtures';
 import { USER } from '@/constants';
 
 // Utils
-import { extractSecretFromOtpAuthUrl, generateOTP } from '@/utils';
+import { generateOTP } from '@/utils';
 
 const authFile = path.join(__dirname, '../.auth/google-user.json');
 test('authenticated with Google account', async ({ page, googleLoginPage, googleOAuthPage }) => {
@@ -19,8 +19,7 @@ test('authenticated with Google account', async ({ page, googleLoginPage, google
   await googleOAuthPage.login(USER.GOOGLE_EMAIL, USER.GOOGLE_PASSWORD);
 
   // Enter 2FA code
-  const secret = extractSecretFromOtpAuthUrl(USER.GOOGLE_OTP_SECRET);
-  const twoFACode = generateOTP(secret);
+  const twoFACode = generateOTP(USER.GOOGLE_OTP_SECRET);
   await googleOAuthPage.enterCode(twoFACode);
 
   // Save auth state
