@@ -72,6 +72,12 @@ PASSWORD=123456
 INVALID_USER_NAME=test123@example.com
 INVALID_PASSWORD=1234567
 BASE_URL=https://pocketbase.io
+URL_LOGIN_WITH_GOOGLE_AUTHENTICATION=https://app.asana.com/-/login
+
+// Your account google, make sure that you enable 2FA with authenticator apps
+GOOGLE_EMAIL=
+GOOGLE_PASSWORD=
+GOOGLE_OTP_SECRET=
 ```
 
 ## Ways to use

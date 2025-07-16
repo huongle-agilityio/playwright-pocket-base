@@ -26,7 +26,23 @@ export default defineConfig({
   },
 
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.ts/, testDir: './e2e/setup' },
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+      testDir: './e2e/setup',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: false,
+        launchOptions: {
+          args: [
+            '--ignore-certificate-errors',
+            '--disable-web-security',
+            '--no-sandbox-and-elevated',
+            '--disable-blink-features=AutomationControlled',
+          ],
+        },
+      },
+    },
 
     {
       name: 'chromium',

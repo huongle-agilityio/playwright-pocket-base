@@ -1,5 +1,5 @@
 import { APIRequestContext, test as base, expect } from '@playwright/test';
-import { DashboardPage, LoginPage } from '../pages';
+import { DashboardPage, GoogleLoginPage, GoogleOAuthPage, LoginPage } from '../pages';
 import { UserForm, TablePage, SearchInput } from '../components';
 
 // Constants
@@ -15,6 +15,8 @@ interface PagesFixture {
   dashboardPage: DashboardPage;
   searchInput: SearchInput;
   apiContext: APIRequestContext;
+  googleLoginPage: GoogleLoginPage;
+  googleOAuthPage: GoogleOAuthPage;
 }
 
 const test = base.extend<PagesFixture>({
@@ -54,6 +56,16 @@ const test = base.extend<PagesFixture>({
   searchInput: async ({ page }, use) => {
     const searchInput = new SearchInput(page);
     await use(searchInput);
+  },
+
+  googleLoginPage: async ({ page }, use) => {
+    const googleLoginPage = new GoogleLoginPage(page);
+    await use(googleLoginPage);
+  },
+
+  googleOAuthPage: async ({ page }, use) => {
+    const googleOAuthPage = new GoogleOAuthPage(page);
+    await use(googleOAuthPage);
   },
 });
 

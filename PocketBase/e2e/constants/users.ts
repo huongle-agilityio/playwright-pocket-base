@@ -5,6 +5,10 @@ import { Table, User } from '@/interfaces';
 import { generateUserId } from '@/utils';
 
 export const USER = {
+  GOOGLE_EMAIL: process.env.GOOGLE_EMAIL,
+  GOOGLE_PASSWORD: process.env.GOOGLE_PASSWORD,
+  GOOGLE_OTP_SECRET: process.env.GOOGLE_OTP_SECRET,
+
   USER_NAME: process.env.USER_NAME,
   PASSWORD: process.env.PASSWORD,
 

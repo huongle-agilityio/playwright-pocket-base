@@ -28,6 +28,7 @@
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "otpauth": "^9.4.0",
     "typescript": "^5.8.3",
     "vercel": "^44.2.13"
   }
