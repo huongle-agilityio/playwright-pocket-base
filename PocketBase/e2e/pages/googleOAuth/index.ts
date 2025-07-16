@@ -23,7 +23,7 @@ export class GoogleOAuthPage {
    * @param email - The email address to fill in the login form.
    * @param password - The password to fill in the login form.
    */
-  async login(email, password) {
+  async login(email: string, password: string) {
     await this.email.click();
     await this.email.fill(email);
     await this.emailNext.click();
@@ -36,7 +36,7 @@ export class GoogleOAuthPage {
    *
    * @param code - The code to enter in the Google 2-Step Verification form.
    */
-  async enterCode(code) {
+  async enterCode(code: string) {
     await this.code.fill(code);
     await this.totpNext.click();
   }
