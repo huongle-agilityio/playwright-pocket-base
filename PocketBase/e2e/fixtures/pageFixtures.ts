@@ -1,5 +1,6 @@
 import { APIRequestContext, test as base, expect } from '@playwright/test';
-import { DashboardPage, LoginPage, UserForm, TablePage, SearchInput } from '../pages';
+import { DashboardPage, LoginPage } from '../pages';
+import { UserForm, TablePage, SearchInput } from '../components';
 
 // Constants
 import { BASE_URL } from '@/constants';

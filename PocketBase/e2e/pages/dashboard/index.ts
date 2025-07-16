@@ -1,14 +1,9 @@
 import { expect } from '@playwright/test';
+import { BasePage } from '../base';
 
-export class DashboardPage {
-  readonly page;
-
+export class DashboardPage extends BasePage {
   constructor(page) {
-    this.page = page;
-  }
-
-  private get frame() {
-    return this.page.frameLocator('iframe');
+    super(page);
   }
 
   async goto() {
@@ -56,16 +51,6 @@ export class DashboardPage {
 
   async clickAddNew() {
     await this.frame.locator('header').getByRole('button', { name: 'New record' }).click();
-  }
-
-  /**
-   * Verifies that a toast message with the specified text is visible on the page.
-   *
-   * @param message - The text of the toast message to verify.
-   */
-  async verifyToastMessage(message: string) {
-    const toastMessage = this.frame.getByText(message);
-    await expect(toastMessage).toBeVisible({ timeout: 10000 });
   }
 
   /**
