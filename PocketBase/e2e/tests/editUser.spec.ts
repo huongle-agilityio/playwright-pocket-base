@@ -4,31 +4,15 @@ import { expect, test } from '@/fixtures';
 import { MESSAGES, STATUS_CODES } from '@/constants';
 
 // Utils
-import {
-  createMockUsers,
-  deleteMockUsers,
-  generateMockUsers,
-  generateUserId,
-  waitForPatchResponse,
-} from '@/utils';
+import { generateUserId, waitForPatchResponse } from '@/utils';
 
 test.describe('Edit user', () => {
-  const mocks = generateMockUsers(['edit1', 'edit2', 'edit3']);
-
-  test.beforeEach(async ({ dashboardPage, apiContext }) => {
-    await dashboardPage.goto();
-    await createMockUsers({ users: mocks, context: apiContext });
-  });
-
-  test.afterEach(async ({ tablePage, apiContext }) => {
-    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
-  });
-
   test('Successfully update the user with selected email', async ({
     tablePage,
     page,
     userForm,
     dashboardPage,
+    editUserMocking,
   }) => {
     let row;
     let response;
@@ -37,7 +21,7 @@ test.describe('Edit user', () => {
 
     await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
-      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      row = await tablePage.getRowByValue({ columnName: 'email', value: editUserMocking[1].email });
       await expect(row).toBeVisible();
     });
 
@@ -48,7 +32,7 @@ test.describe('Edit user', () => {
 
     await test.step('Update email', async () => {
       await userForm.verifyTitle('Edit users record');
-      const responsePromise = waitForPatchResponse({ page, id: mocks[1].id });
+      const responsePromise = waitForPatchResponse({ page, id: editUserMocking[1].id });
 
       await userForm.email.fill(newEmail);
       await userForm.saveChange();
@@ -88,13 +72,14 @@ test.describe('Edit user', () => {
     tablePage,
     userForm,
     dashboardPage,
+    editUserMocking,
   }) => {
     let row;
     const newEmail = `test${generateUserId()}@gmail.com`;
 
     await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
-      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      row = await tablePage.getRowByValue({ columnName: 'email', value: editUserMocking[1].email });
       await expect(row).toBeVisible();
     });
 
@@ -124,15 +109,16 @@ test.describe('Edit user', () => {
     page,
     userForm,
     dashboardPage,
+    editUserMocking,
   }) => {
     let row;
     let response;
     let responseBody;
-    const newEmail = mocks[0].email;
+    const newEmail = editUserMocking[0].email;
 
     await test.step('The user in the table is visible', async () => {
       await dashboardPage.goto();
-      row = await tablePage.getRowByValue({ columnName: 'email', value: mocks[1].email });
+      row = await tablePage.getRowByValue({ columnName: 'email', value: editUserMocking[1].email });
       await expect(row).toBeVisible();
     });
 
@@ -143,7 +129,7 @@ test.describe('Edit user', () => {
 
     await test.step('Update email', async () => {
       await userForm.verifyTitle('Edit users record');
-      const responsePromise = waitForPatchResponse({ page, id: mocks[1].id });
+      const responsePromise = waitForPatchResponse({ page, id: editUserMocking[1].id });
 
       await userForm.email.fill(newEmail);
       await userForm.saveChange();

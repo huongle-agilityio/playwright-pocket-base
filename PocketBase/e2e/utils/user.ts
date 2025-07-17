@@ -1,7 +1,7 @@
 import { APIRequestContext, expect } from '@playwright/test';
 
-// Pages
-import { TablePage } from '@/pages';
+// Components
+import { TablePage } from '@/components';
 
 // Constants
 import { API_URLS, STATUS_CODES } from '@/constants';
@@ -112,4 +112,25 @@ export const createMockUsers = async ({
     const response = await context.post(API_URLS.USER, { data: user });
     expect(response.status()).toBe(STATUS_CODES.SUCCESS);
   }
+};
+
+/**
+ * Creates and manages a fixture for mock user data.
+ *
+ * This function generates mock users with the given usernames, creates them in the database,
+ * and ensures they are deleted after use. It is useful for testing scenarios where temporary
+ * user data is needed.
+ *
+ * @param userNames - An array of strings representing the usernames to be used for generating mock users.
+ */
+export const createUserMockFixture = (userNames: string[]) => {
+  return async ({ apiContext, dashboardPage, tablePage }, use) => {
+    const mocks = generateMockUsers(userNames);
+
+    await dashboardPage.goto();
+    await createMockUsers({ users: mocks, context: apiContext });
+    await use(mocks);
+    await tablePage.waitForTableToLoad();
+    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
+  };
 };

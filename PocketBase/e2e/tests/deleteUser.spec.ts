@@ -4,40 +4,28 @@ import { expect, test } from '@/fixtures';
 import { MESSAGES, STATUS_CODES } from '@/constants';
 
 // Utils
-import {
-  createMockUsers,
-  deleteMockUsers,
-  waitForDeleteMultipleResponse,
-  waitForDeleteResponse,
-  generateMockUsers,
-} from '@/utils';
+import { waitForDeleteMultipleResponse, waitForDeleteResponse } from '@/utils';
 
 test.describe('Delete user', () => {
-  const mocks = generateMockUsers(['delete1', 'delete2', 'delete3']);
-
-  test.beforeEach(async ({ dashboardPage, searchInput, apiContext }) => {
-    await dashboardPage.goto();
-    await createMockUsers({ users: mocks, context: apiContext });
-
+  test.beforeEach(async ({ searchInput }) => {
     if (await searchInput.clearButton.isVisible()) {
       await searchInput.clickClearButton();
     }
   });
 
-  test.afterEach(async ({ tablePage, apiContext }) => {
-    await tablePage.waitForTableToLoad();
-
-    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
-  });
-
-  test('Successfully delete single user', async ({ dashboardPage, tablePage, page }) => {
+  test('Successfully delete single user', async ({
+    dashboardPage,
+    tablePage,
+    page,
+    deleteUserMocking,
+  }) => {
     await test.step('Click checkbox to select user', async () => {
       await dashboardPage.goto();
-      await tablePage.selectRowByValue({ columnName: 'email', value: mocks[0].email });
+      await tablePage.selectRowByValue({ columnName: 'email', value: deleteUserMocking[0].email });
     });
 
     await test.step('API response status is no content', async () => {
-      const responsePromise = waitForDeleteResponse({ page, id: mocks[0].id });
+      const responsePromise = waitForDeleteResponse({ page, id: deleteUserMocking[0].id });
 
       await dashboardPage.deleteSelected();
       await dashboardPage.submitConfirmModal();
@@ -51,7 +39,7 @@ test.describe('Delete user', () => {
       await expect(async () => {
         const row = await tablePage.getRowByValue({
           columnName: 'email',
-          value: mocks[0].email,
+          value: deleteUserMocking[0].email,
           requireVisible: false,
         });
         const count = await row.count();
@@ -60,8 +48,13 @@ test.describe('Delete user', () => {
     });
   });
 
-  test('Successfully delete multiple user', async ({ dashboardPage, tablePage, page }) => {
-    const targetNames = [mocks[0].id, mocks[1].id];
+  test('Successfully delete multiple user', async ({
+    dashboardPage,
+    tablePage,
+    page,
+    deleteUserMocking,
+  }) => {
+    const targetNames = [deleteUserMocking[0].id, deleteUserMocking[1].id];
 
     await test.step('Click checkbox to select user', async () => {
       await dashboardPage.goto();
@@ -99,7 +92,12 @@ test.describe('Delete user', () => {
     });
   });
 
-  test.skip('Successfully delete all user', async ({ dashboardPage, tablePage, page }) => {
+  test.skip('Successfully delete all user', async ({
+    dashboardPage,
+    tablePage,
+    page,
+    deleteUserMocking,
+  }) => {
     await test.step('Click the checkbox on the header to select all users', async () => {
       await dashboardPage.goto();
       await tablePage.selectAllRows();
@@ -107,7 +105,9 @@ test.describe('Delete user', () => {
 
     await test.step('Confirm delete all users', async () => {
       const deleteResponsePromises = Promise.all(
-        Array.from({ length: mocks.length }).map(() => waitForDeleteMultipleResponse({ page })),
+        Array.from({ length: deleteUserMocking.length }).map(() =>
+          waitForDeleteMultipleResponse({ page }),
+        ),
       );
 
       await dashboardPage.deleteSelected();
@@ -123,12 +123,16 @@ test.describe('Delete user', () => {
     });
   });
 
-  test('Successfully unselect user delete in the table', async ({ dashboardPage, tablePage }) => {
+  test('Successfully unselect user delete in the table', async ({
+    dashboardPage,
+    tablePage,
+    deleteUserMocking,
+  }) => {
     await test.step('Click the checkbox on the header to select all users', async () => {
       await dashboardPage.goto();
       const checkbox = await tablePage.selectRowByValue({
         columnName: 'email',
-        value: mocks[0].email,
+        value: deleteUserMocking[0].email,
       });
 
       await expect(dashboardPage.verifyNumberOfRecordsSelected(1)).toBeVisible();
@@ -138,7 +142,7 @@ test.describe('Delete user', () => {
     await test.step('No users are selected', async () => {
       const checkbox = await tablePage.selectRowByValue({
         columnName: 'email',
-        value: mocks[0].email,
+        value: deleteUserMocking[0].email,
       });
       await expect(dashboardPage.verifyNumberOfRecordsSelected(1)).toHaveCount(0);
       expect(await checkbox.isChecked()).toBe(false);
@@ -148,8 +152,9 @@ test.describe('Delete user', () => {
   test('Successfully unselect user delete with the button reset', async ({
     dashboardPage,
     tablePage,
+    deleteUserMocking,
   }) => {
-    const targetNames = [mocks[0].id, mocks[1].id];
+    const targetNames = [deleteUserMocking[0].id, deleteUserMocking[1].id];
 
     await test.step('Select multiple users', async () => {
       await dashboardPage.goto();

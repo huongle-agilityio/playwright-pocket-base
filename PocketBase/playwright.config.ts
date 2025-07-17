@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -7,9 +8,15 @@ import { BASE_URL } from '@/constants';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+const bddConfig = defineBddConfig({
+  features: 'e2e/tests/features/*.feature',
+  steps: 'e2e/tests/steps/*.ts',
+  featuresRoot: 'e2e/tests/features',
+});
+
 export default defineConfig({
   tsconfig: './tsconfig.json',
-  testDir: './e2e/tests',
+  testDir: bddConfig,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -29,6 +36,13 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
+      testIgnore: /googleAuth\.setup\.ts/,
+      testDir: './e2e/setup',
+    },
+
+    {
+      name: 'googleAuthSetup',
+      testMatch: /googleAuth\.setup\.ts/,
       testDir: './e2e/setup',
       use: {
         ...devices['Desktop Chrome'],

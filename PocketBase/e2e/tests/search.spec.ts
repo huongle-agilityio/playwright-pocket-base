@@ -4,30 +4,18 @@ import { expect, test } from '@/fixtures';
 import { STATUS_CODES } from '@/constants';
 
 // Utils
-import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse } from '@/utils';
+import { waitForGetResponse } from '@/utils';
 
 test.describe('Search', () => {
-  const mocks = generateMockUsers(['search1', 'search2', 'search33']);
-
-  test.beforeEach(async ({ dashboardPage, searchInput, apiContext }) => {
-    await dashboardPage.goto();
-    await createMockUsers({ users: mocks, context: apiContext });
-    await searchInput.clickClearButton();
-  });
-
-  test.afterEach(async ({ dashboardPage, tablePage, apiContext }) => {
-    await dashboardPage.verifyDashboardLoaded();
-    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
-  });
-
   test('Successfully search users with a matching email', async ({
     page,
     searchInput,
     tablePage,
+    searchUserMocking,
   }) => {
     let response;
     let responseBody;
-    const searchValue = mocks[1].email;
+    const searchValue = searchUserMocking[1].email;
 
     await test.step('Trigger search and wait for response', async () => {
       const responsePromise = waitForGetResponse({ url: `filter=id~"${searchValue}"`, page });
@@ -69,7 +57,12 @@ test.describe('Search', () => {
     await searchInput.clickClearButton();
   });
 
-  test('Successfully search with half of the matching text', async ({ searchInput, tablePage }) => {
+  test('Successfully search with half of the matching text', async ({
+    searchInput,
+    tablePage,
+    searchUserMocking,
+  }) => {
+    void searchUserMocking;
     const searchValue = 'search';
 
     await test.step('Search for a user', async () => {
@@ -96,7 +89,10 @@ test.describe('Search', () => {
   test('Successfully search for users with the unmatched text', async ({
     searchInput,
     tablePage,
+    searchUserMocking,
   }) => {
+    void searchUserMocking;
+
     const searchValue = 'lorem';
     await test.step('Search for a user', async () => {
       await searchInput.search(searchValue);
@@ -115,7 +111,10 @@ test.describe('Search', () => {
   test('Successfully clear filters when clicking the clear button', async ({
     searchInput,
     tablePage,
+    searchUserMocking,
   }) => {
+    void searchUserMocking;
+
     const searchValue = 'lorem';
     await test.step('Search for a user', async () => {
       await searchInput.search(searchValue);
