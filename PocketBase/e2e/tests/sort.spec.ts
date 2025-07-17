@@ -7,20 +7,9 @@ import { STATUS_CODES } from '@/constants';
 import { Table, User } from '@/interfaces';
 
 // Utils
-import { createMockUsers, deleteMockUsers, generateMockUsers, waitForGetResponse } from '@/utils';
+import { waitForGetResponse } from '@/utils';
 
 test.describe('Sort', () => {
-  const mocks = generateMockUsers(['sort1', 'sort2', 'sort3']);
-
-  test.beforeEach(async ({ dashboardPage, apiContext }) => {
-    await dashboardPage.goto();
-    await createMockUsers({ users: mocks, context: apiContext });
-  });
-
-  test.afterEach(async ({ tablePage, apiContext }) => {
-    await deleteMockUsers({ tablePage, users: mocks, context: apiContext });
-  });
-
   const CASES: { columnName: keyof Table }[] = [
     {
       columnName: 'id',
@@ -46,6 +35,7 @@ test.describe('Sort', () => {
     test(`Successfully sort the ${columnName} column alphabetical order`, async ({
       page,
       tablePage,
+      sortUserMocking,
     }) => {
       let expectedSorted;
 
@@ -56,7 +46,7 @@ test.describe('Sort', () => {
 
         const response = await responsePromise;
         const responseBody = await response.json();
-        expectedSorted = mocks
+        expectedSorted = sortUserMocking
           .map((u) => u[columnName as keyof User])
           .sort()
           .reverse();
