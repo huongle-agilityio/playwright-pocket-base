@@ -40,6 +40,7 @@ export default defineConfig([
     },
     rules: {
       'prettier/prettier': 'error',
+      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
     },
   },
 ]);

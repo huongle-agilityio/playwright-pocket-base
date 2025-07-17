@@ -10,7 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const bddConfig = defineBddConfig({
   features: 'e2e/tests/features/*.feature',
-  steps: 'e2e/tests/steps/*.ts',
+  steps: ['e2e/tests/steps/*.ts', 'e2e/fixtures/index.ts'],
   featuresRoot: 'e2e/tests/features',
 });
 
