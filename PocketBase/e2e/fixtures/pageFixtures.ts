@@ -1,5 +1,5 @@
 import { test as base, createBdd } from 'playwright-bdd';
-import { APIRequestContext, expect, mergeTests } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import { DashboardPage, GoogleLoginPage, GoogleOAuthPage, LoginPage } from '../pages';
 import { UserForm, TablePage, SearchInput } from '../components';
 
@@ -80,14 +80,12 @@ const basePage = base.extend<PagesFixture>({
   },
 });
 
-const prepareAndCleanup = basePage.extend<PrepareAndCleanup>({
+const test = basePage.extend<PrepareAndCleanup>({
   deleteUserMocking: createUserMockFixture(['delete1', 'delete2', 'delete3']),
   editUserMocking: createUserMockFixture(['edit1', 'edit2', 'edit3']),
   searchUserMocking: createUserMockFixture(['search1', 'search2', 'search3']),
   sortUserMocking: createUserMockFixture(['sort1', 'sort2', 'sort3']),
 });
-
-const test = mergeTests(prepareAndCleanup, basePage);
 
 export const { Given, When, Then } = createBdd(test);
 export { test, expect };
