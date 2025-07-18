@@ -1,5 +1,8 @@
 Feature: Sort users
 
+  Background:
+    Given I am on the dashboard page
+
   Scenario: Sort table by <column> in descending order
     Given the mock data is prepared for column "<column>"
     When I click the "<column>" column header

@@ -14,6 +14,10 @@ let expectedSorted: string[] = [];
 let responseData: User[] = [];
 let responseStatus: number;
 
+Given('I am on the dashboard page', async ({ dashboardPage }) => {
+  await dashboardPage.goto();
+});
+
 Given(
   'the mock data is prepared for column {string}',
   async ({ sortUserMocking }, columnName: keyof Table) => {

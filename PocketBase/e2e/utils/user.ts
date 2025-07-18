@@ -124,10 +124,9 @@ export const createMockUsers = async ({
  * @param userNames - An array of strings representing the usernames to be used for generating mock users.
  */
 export const createUserMockFixture = (userNames: string[]) => {
-  return async ({ apiContext, dashboardPage, tablePage }, use) => {
+  return async ({ apiContext, tablePage }, use) => {
     const mocks = generateMockUsers(userNames);
 
-    await dashboardPage.goto();
     await createMockUsers({ users: mocks, context: apiContext });
     await use(mocks);
     await tablePage.waitForTableToLoad();
