@@ -14,6 +14,7 @@ let response: Response;
 let responseBody: { items: Table[] };
 let searchValue: string;
 
+// Scenario: Successfully search users with a matching email
 When('I search with a full matching email', async ({ page, searchInput, searchUserMocking }) => {
   searchValue = searchUserMocking[1].email;
 
@@ -26,18 +27,6 @@ When('I search with a full matching email', async ({ page, searchInput, searchUs
 
   response = await responsePromise;
   responseBody = await response.json();
-});
-
-When('I search with a partial email', async ({ searchInput, searchUserMocking }) => {
-  void searchUserMocking;
-  searchValue = 'search';
-  await searchInput.search(searchValue);
-});
-
-When('I search with an unmatched keyword', async ({ searchInput, searchUserMocking }) => {
-  void searchUserMocking;
-  searchValue = 'lorem';
-  await searchInput.search(searchValue);
 });
 
 Then('only the matching user should appear in the table', async ({ tablePage }) => {
@@ -67,6 +56,17 @@ Then('the request should be sent successfully', async ({}) => {
   expect(responseBody.items.length).toBe(1);
 });
 
+Then('the search input should be empty', async ({ searchInput }) => {
+  await searchInput.clickClearButton();
+});
+
+// Scenario: Successfully search with half of the matching text
+When('I search with a partial email', async ({ searchInput, searchUserMocking }) => {
+  void searchUserMocking;
+  searchValue = 'search';
+  await searchInput.search(searchValue);
+});
+
 Then('multiple matching users should appear in the table', async ({ tablePage }) => {
   const rows = await tablePage.getMultipleRowsByValue({
     columnName: 'email',
@@ -81,6 +81,13 @@ Then('multiple matching users should appear in the table', async ({ tablePage })
   }
 });
 
+// Scenario: Successfully search with unmatched text
+When('I search with an unmatched keyword', async ({ searchInput, searchUserMocking }) => {
+  void searchUserMocking;
+  searchValue = 'lorem';
+  await searchInput.search(searchValue);
+});
+
 Then(
   'no user should appear and the "No records found." message is shown',
   async ({ tablePage }) => {
@@ -91,6 +98,7 @@ Then(
   },
 );
 
+// Scenario: Successfully clear filters when clicking the clear button
 Then('I click the clear filters button', async ({ tablePage, searchInput }) => {
   await tablePage.waitForTableToLoad();
   await tablePage.buttonClearFilters().click();
@@ -100,8 +108,4 @@ Then('I click the clear filters button', async ({ tablePage, searchInput }) => {
 Then('all users should reappear in the table', async ({ tablePage }) => {
   expect(await tablePage.getLength()).toBeGreaterThan(0);
   await expect(tablePage.buttonClearFilters()).not.toBeVisible();
-});
-
-Then('the search input should be empty', async ({ searchInput }) => {
-  await searchInput.clickClearButton();
 });
