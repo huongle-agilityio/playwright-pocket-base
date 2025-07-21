@@ -7,6 +7,8 @@ import { USER } from '@/constants';
 // Utils
 import { generateOTP } from '@/utils';
 
+test.setTimeout(120_000);
+
 const authFile = path.join(__dirname, '../.auth/google-user.json');
 test('authenticated with Google account', async ({ page, googleLoginPage, googleOAuthPage }) => {
   await googleLoginPage.goto();
