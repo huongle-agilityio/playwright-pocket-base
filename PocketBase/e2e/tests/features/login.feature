@@ -9,9 +9,9 @@ Feature: Login
     Then I should receive a valid token and correct email in response
     And the dashboard is loaded
 
-  Scenario: Failure with invalid "<field>"
+  Scenario Outline: Failure with invalid "<field>"
     When I submit the login form with invalid "<field>" input
-    Then I should see an error message "Invalid login credentials."
+    Then the toast with the message "Invalid login credentials." appears
     And the response should contain message "Failed to authenticate."
 
     Examples:

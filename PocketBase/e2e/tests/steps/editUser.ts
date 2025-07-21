@@ -46,10 +46,6 @@ Then('the response return has new email', async () => {
   expect(responseBody.email).toBe(newEmail);
 });
 
-Then('edit user successfully toast is shown', async ({ dashboardPage }) => {
-  await dashboardPage.verifyToastMessage(MESSAGES.SUCCESSFULLY_UPDATED_RECORD);
-});
-
 Then('I can see the user is updated with the new email', async ({ tablePage }) => {
   // Wait for table to reload or changes to reflect
   await expect(async () => {
@@ -104,11 +100,6 @@ When(
   },
 );
 
-Then('the toast show error "Value must be unique."', async ({ userForm, dashboardPage }) => {
-  await userForm.verifyTitle('Edit users record');
-  await dashboardPage.verifyToastMessage(MESSAGES.FAILED_TO_UPDATE_RECORD);
-});
-
 Then('the response is bad request with error message "Failed to update record."', async () => {
   expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
   expect(responseBody.message).toBe(MESSAGES.FAILED_TO_UPDATE_RECORD);
@@ -116,5 +107,6 @@ Then('the response is bad request with error message "Failed to update record."'
 });
 
 Then('the email error message is shown on the form', async ({ userForm }) => {
+  await userForm.verifyTitle('Edit users record');
   await userForm.verifyErrorMessage(MESSAGES.UNIQUE_VALUE);
 });

@@ -7,7 +7,7 @@ Feature: Edit user
     Given I saw the user in the table
     When I select the user to edit
     And updates the email field with a new email and click "Save" button
-    Then edit user successfully toast is shown
+    Then the toast with the message "Successfully updated record." appears
     And the response return has new email
     And I can see the user is updated with the new email
 
@@ -15,13 +15,13 @@ Feature: Edit user
     Given I saw the user in the table
     When I select the user to edit
     And updates the email field with a new email and click "Save and continue" button
-    Then edit user successfully toast is shown
+    Then the toast with the message "Successfully updated record." appears
     And the edit form is still open
 
   Scenario: Failure update if the email already exists
     Given I saw the user in the table
     When I select the user to edit
     And updates the email field with an existing email and click "Save" button
-    Then the toast show error "Value must be unique."
+    Then the toast with the message "Failed to update record." appears
     And the response is bad request with error message "Failed to update record."
     And the email error message is shown on the form

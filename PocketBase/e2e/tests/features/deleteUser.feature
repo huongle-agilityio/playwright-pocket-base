@@ -8,14 +8,14 @@ Feature: Delete user
     When I select the user by clicking checkbox
     And I click the delete button and confirm to delete the user
     Then the response status should be "No content"
-    And the toast with message "Successfully deleted the selected record."
+    And the toast with the message "Successfully deleted the selected record." appears
     And the user row should not be visible in the table
 
   Scenario: Successfully delete multiple users
     When I select multiple users by clicking the checkbox
     And I click the delete button and confirm delete multiple users
     Then the response status for each deletion should be "No content"
-    And the toast with message "Successfully deleted the selected records."
+    And the toast with the message "Successfully deleted the selected records." appears
     And the selected rows should not be visible in the table
 
   Scenario: Unselect user delete in the table

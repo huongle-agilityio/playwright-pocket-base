@@ -1,6 +1,10 @@
 // Fixtures
-import { STATUS_CODES } from '@/constants';
 import { expect, Given, Then, When } from '@/fixtures';
+
+// Constants
+import { STATUS_CODES } from '@/constants';
+
+// Utils
 import { waitForDeleteResponse } from '@/utils';
 
 let response;
@@ -36,10 +40,6 @@ When(
 
 Then('the response status should be {string}', () => {
   expect(response.status()).toBe(STATUS_CODES.NO_CONTENT);
-});
-
-Then('the toast with message {string}', async ({ dashboardPage }, message: string) => {
-  await dashboardPage.verifyToastMessage(message);
 });
 
 Then(
