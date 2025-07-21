@@ -11,4 +11,4 @@ export const MESSAGES = {
   FAILED_TO_CREATE_RECORD: 'Failed to create record.',
   FAILED_TO_UPDATE_RECORD: 'Failed to update record.',
   LIMIT_CHARACTERS: (number = 3) => `Must be at least ${number} character(s).`,
-};
+} as const;
