@@ -56,11 +56,11 @@ When(
   },
 );
 
-Then('I should see an error message "Invalid login credentials."', async ({ loginPage }) => {
+Then('I should see an error message {string}', async ({ loginPage }) => {
   await loginPage.verifyToastMessage(MESSAGES.INVALID_LOGIN_CREDENTIALS);
 });
 
-Then('the response should contain message "Failed to authenticate."', async () => {
+Then('the response should contain message {string}', async () => {
   expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
   expect(responseBody.token).toBeFalsy();
   expect(responseBody.message).toBe(MESSAGES.FAILED_TO_AUTHENTICATE);

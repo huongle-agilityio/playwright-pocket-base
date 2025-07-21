@@ -51,7 +51,7 @@ Then('only the matching user should appear in the table', async ({ tablePage }) 
   }).toPass({ timeout: 5000 });
 });
 
-Then('the request should be sent successfully', async ({}) => {
+Then('the request should be sent successfully', async () => {
   expect(response.status()).toBe(STATUS_CODES.SUCCESS);
   expect(responseBody.items.length).toBe(1);
 });
@@ -88,15 +88,12 @@ When('I search with an unmatched keyword', async ({ searchInput, searchUserMocki
   await searchInput.search(searchValue);
 });
 
-Then(
-  'no user should appear and the "No records found." message is shown',
-  async ({ tablePage }) => {
-    await tablePage.waitForTableToLoad();
-    expect(await tablePage.getLength()).toBe(0);
-    await tablePage.verifyMessage('No records found.');
-    await expect(tablePage.buttonClearFilters()).toBeVisible();
-  },
-);
+Then('no user should appear and the {string} message is shown', async ({ tablePage }, message) => {
+  await tablePage.waitForTableToLoad();
+  expect(await tablePage.getLength()).toBe(0);
+  await tablePage.verifyMessage(message);
+  await expect(tablePage.buttonClearFilters()).toBeVisible();
+});
 
 // Scenario: Successfully clear filters when clicking the clear button
 Then('I click the clear filters button', async ({ tablePage, searchInput }) => {

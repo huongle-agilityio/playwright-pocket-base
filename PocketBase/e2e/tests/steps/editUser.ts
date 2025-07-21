@@ -100,7 +100,7 @@ When(
   },
 );
 
-Then('the response is bad request with error message "Failed to update record."', async () => {
+Then('the response is bad request with error message {string}', async () => {
   expect(response.status()).toBe(STATUS_CODES.BAD_REQUEST);
   expect(responseBody.message).toBe(MESSAGES.FAILED_TO_UPDATE_RECORD);
   expect(responseBody.data.email).toBeTruthy();
