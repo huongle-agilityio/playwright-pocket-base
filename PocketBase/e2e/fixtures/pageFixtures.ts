@@ -87,5 +87,5 @@ const test = basePage.extend<PrepareAndCleanup>({
   sortUserMocking: createUserMockFixture(['sort1', 'sort2', 'sort3']),
 });
 
-export const { Given, When, Then } = createBdd(test);
+export const { Given, When, Then, AfterScenario } = createBdd(test);
 export { test, expect };
