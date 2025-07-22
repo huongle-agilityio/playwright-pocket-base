@@ -21,7 +21,7 @@ Given('I open the add new user form', async ({ dashboardPage, userForm }) => {
   await userForm.verifyTitle('New users record');
 });
 
-AfterScenario(async ({ tablePage, apiContext }) => {
+AfterScenario({ tags: '@addNewUser' }, async ({ tablePage, apiContext }) => {
   await deleteAnUser({ tablePage, user: MOCK_USER, context: apiContext });
 });
 

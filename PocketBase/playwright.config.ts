@@ -35,15 +35,16 @@ export default defineConfig({
   projects: [
     {
       name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-      testIgnore: /googleAuth\.setup\.ts/,
-      testDir: './e2e/setup',
+      testDir: './.features-gen',
+      grep: /@setup/,
+      fullyParallel: false,
     },
 
     {
       name: 'googleAuthSetup',
-      testMatch: /googleAuth\.setup\.ts/,
-      testDir: './e2e/setup',
+      testDir: './.features-gen',
+      grep: /@googleSetup/,
+      fullyParallel: false,
       use: {
         ...devices['Desktop Chrome'],
         headless: false,
@@ -60,22 +61,30 @@ export default defineConfig({
 
     {
       name: 'chromium',
+      testDir: './.features-gen',
+      grepInvert: /@setup|@googleSetup/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
+
     {
       name: 'firefox',
+      testDir: './.features-gen',
+      grepInvert: /@setup|@googleSetup/,
       use: {
         ...devices['Desktop Firefox'],
         storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
+
     {
       name: 'webkit',
+      testDir: './.features-gen',
+      grepInvert: /@setup|@googleSetup/,
       use: {
         ...devices['Desktop Safari'],
         storageState: 'e2e/.auth/user.json',

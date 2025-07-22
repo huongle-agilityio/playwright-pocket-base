@@ -1,3 +1,4 @@
+@addNewUser
 Feature: Add new user
 
   Background:
