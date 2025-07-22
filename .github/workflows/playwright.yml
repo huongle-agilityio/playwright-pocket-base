@@ -47,7 +47,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Playwright BDD tests
-        run: pnpm test
+        run: xvfb-run --auto-servernum -- pnpm test
 
       - name: Upload artifact reports
         uses: actions/upload-artifact@v4
