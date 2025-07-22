@@ -1,6 +1,5 @@
-import { createBdd } from 'playwright-bdd';
 import { type Response } from '@playwright/test';
-import { test, expect } from '@/fixtures/noStorage';
+import { expect, Given, Then, When } from '@/fixtures/authFixtures';
 
 // Constants
 import { API_URLS, MESSAGES, STATUS_CODES, USER } from '@/constants';
@@ -10,8 +9,6 @@ import { User } from '@/interfaces';
 
 // Utils
 import { waitForPostResponse } from '@/utils';
-
-const { Given, When, Then } = createBdd(test);
 
 let response: Response;
 let responseBody: { token: string; record: User; message: string };
