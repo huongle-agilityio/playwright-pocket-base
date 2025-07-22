@@ -1,4 +1,4 @@
-@skipSetup
+@noStorage
 @googleSetup
 @timeout:120000
 Feature: Login with Google account

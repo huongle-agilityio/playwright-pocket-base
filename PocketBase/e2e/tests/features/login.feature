@@ -1,4 +1,4 @@
-@skipSetup
+@noStorage
 Feature: Login
 
   Background:

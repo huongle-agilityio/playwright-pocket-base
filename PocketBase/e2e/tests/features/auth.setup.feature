@@ -1,5 +1,5 @@
 @setup
-@skipSetup
+@noStorage
 Feature: Authenticated with normal user
 
   Scenario: I log in as a user and save auth state
