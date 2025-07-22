@@ -20,6 +20,10 @@ jobs:
       INVALID_PASSWORD: ${{ vars.INVALID_PASSWORD }}
       BASE_URL: ${{ vars.BASE_URL }}
       CI: ${{ vars.CI }}
+      URL_LOGIN_WITH_GOOGLE_AUTHENTICATION: ${{ vars.URL_LOGIN_WITH_GOOGLE_AUTHENTICATION }}
+      GOOGLE_EMAIL: ${{ secrets.GOOGLE_EMAIL }}
+      GOOGLE_PASSWORD: ${{ secrets.GOOGLE_PASSWORD }}
+      GOOGLE_OTP_SECRET: ${{ secrets.GOOGLE_OTP_SECRET }}
     defaults:
       run:
         working-directory: ./PocketBase
