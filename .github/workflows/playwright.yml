@@ -41,7 +41,7 @@ jobs:
           cache-dependency-path: ./PocketBase/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
