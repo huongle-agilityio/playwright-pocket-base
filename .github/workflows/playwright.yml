@@ -56,8 +56,5 @@ jobs:
           path: ./PocketBase/deploy-report/
           retention-days: 30
 
-      - name: Install Vercel
-        run: pnpm install -g vercel
-
       - name: Deploy Report to Vercel
-        run: vercel --prod --cwd=deploy-report --token=${{ secrets.VERCEL_TOKEN }} --yes
+        run: pnpm dlx vercel --prod --cwd=deploy-report --token=${{ secrets.VERCEL_TOKEN }} --yes
