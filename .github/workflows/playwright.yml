@@ -2,9 +2,9 @@ name: Playwright Report
 
 on:
   push:
-    branches: [feature/pocket-base]
+    branches: [feature/pocket-base-bdd]
   pull_request:
-    branches: [feature/pocket-base]
+    branches: [feature/pocket-base-bdd]
   workflow_dispatch:
 
 jobs:
@@ -23,34 +23,34 @@ jobs:
     defaults:
       run:
         working-directory: ./PocketBase
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-          cache-dependency-path: ./PocketBase/package-lock.json
+          cache: "pnpm"
+          cache-dependency-path: ./PocketBase/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test --reporter=html
+      - name: Run Playwright BDD tests
+        run: pnpm test
 
-      - name: Upload artifact playwright-report
+      - name: Upload artifact reports
         uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
         with:
-          name: playwright-report
-          path: ./PocketBase/playwright-report/
+          name: playwright-reports
+          path: ./PocketBase/deploy-report/
           retention-days: 30
 
-      - name: Install vercel
-        run: npm install -g vercel
+      - name: Install Vercel
+        run: pnpm install -g vercel
 
-      - name: Deploy Playwright Report to Vercel
-        run: vercel --prod --cwd=playwright-report --token=${{ secrets.VERCEL_TOKEN }} --yes
+      - name: Deploy Report to Vercel
+        run: vercel --prod --cwd=deploy-report --token=${{ secrets.VERCEL_TOKEN }} --yes

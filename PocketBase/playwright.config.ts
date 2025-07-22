@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { defineBddConfig } from 'playwright-bdd';
+import { cucumberReporter, defineBddConfig } from 'playwright-bdd';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -22,8 +22,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   timeout: 60000,
-  reporter: 'html',
-
+  reporter: [
+    ['html', { outputFolder: 'deploy-report/playwright/index.html', open: 'never' }],
+    cucumberReporter('html', {
+      outputFile: 'deploy-report/cucumber/index.html',
+      externalAttachments: true,
+    }),
+  ],
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',

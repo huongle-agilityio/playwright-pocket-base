@@ -9,3 +9,5 @@ node_modules/
 .env
 e2e/.auth
 **/.features-gen/**/*.spec.js
+/deploy-report/cucumber/
+/deploy-report/playwright/

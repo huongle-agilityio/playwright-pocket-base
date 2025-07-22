@@ -5,10 +5,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "report": "pnpm exec playwright test --reporter=html",
-    "deploy": "pnpm exec vercel --prod --cwd=playwright-report",
     "prepare": "cd .. && husky ./PocketBase/.husky",
-    "test": "pnpm bddgen && pnpm playwright test"
+    "test": "pnpm bddgen && pnpm playwright test",
+    "report:playwright": "pnpm exec playwright show-report deploy-report\\playwright\\index.html",
+    "report:cucumber": "pnpm exec http-server deploy-report\\cucumber -o",
+    "deploy:reports": "pnpm exec vercel --prod --cwd=deploy-report"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
+    "http-server": "^14.1.1",
     "vercel": "^44.2.13"
   }
 }

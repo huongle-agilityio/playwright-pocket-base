@@ -88,26 +88,20 @@ GOOGLE_OTP_SECRET=
 npm run test / pnpm test
 ```
 
-2. Run Tests by file
-
-```
-npx playwright test login.spec.ts / pnpm exec playwright test login.spec.ts
-```
-
-3. Run Tests with UI mode
-
-```
-npx playwright test --ui / pnpm exec playwright test --ui
-```
-
-4. Debug Tests
+2. Debug Tests
 
 ```
 npx playwright test --debug / pnpm exec playwright test --debug
 ```
 
-5. View HTML Report
+3. View Playwright Report and Cucumber Report
 
 ```
-npx playwright show-report / pnpm exec playwright show-report
+// npm
+npm run report:playwright
+npm run report:cucumber
+
+// pnpm
+pnpm report:playwright
+pnpm report:cucumber
 ```
